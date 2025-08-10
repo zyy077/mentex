@@ -382,20 +382,15 @@
 
       if(!texto) return alert('Escreva algo para postar.');
 
-      // Posts só podem ser feitos na categoria "Todos"
-      if(categoria !== 'Todos') {
-        alert('Posts só podem ser feitos na categoria "Todos".');
-        return;
-      }
-
-      posts.Todos[1].unshift({ texto, categoria });
+      // Adiciona o post na aba 1 da categoria selecionada
+      posts[categoria][1].unshift({ texto, categoria });
 
       textarea.value = '';
       categoriaSelect.value = 'Todos';
 
-      // Volta para categoria Todos e aba 1
-      ativarCategoria('Todos');
-      ativarAba('Todos', 1);
+      // Atualiza para mostrar os posts na categoria e aba correta
+      ativarCategoria(categoria);
+      ativarAba(categoria, 1);
     });
 
     // Inicializa mostrando Todos e aba 1 ativa
