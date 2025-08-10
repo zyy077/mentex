@@ -93,10 +93,38 @@
       box-sizing: border-box;
       font-family: 'Segoe UI', sans-serif;
     }
+    #categoria-select {
+      margin-top: 10px;
+      font-size: 1rem;
+      padding: 8px;
+      border-radius: 6px;
+      border: none;
+      outline: none;
+      background: #1b263b;
+      color: white;
+      width: 100%;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+      cursor: pointer;
+    }
     #btn-postar {
       margin-top: 10px;
     }
     /* Lista de posts */
+    #filtro-categorias {
+      margin-bottom: 20px;
+      font-size: 1rem;
+      padding: 8px;
+      border-radius: 6px;
+      border: none;
+      outline: none;
+      background: #1b263b;
+      color: white;
+      width: 100%;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+      cursor: pointer;
+    }
     #posts {
       list-style: none;
       padding-left: 0;
@@ -107,10 +135,20 @@
       padding: 15px 20px;
       border-radius: 8px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-      white-space: pre-wrap; /* respeita quebras de linha */
+      white-space: pre-wrap;
       display: flex;
       justify-content: space-between;
       align-items: center;
+    }
+    #posts li .texto-post {
+      flex: 1;
+    }
+    #posts li .categoria-post {
+      margin-right: 15px;
+      font-weight: bold;
+      font-style: italic;
+      color: #00aaff;
+      white-space: nowrap;
     }
     #posts li button {
       background: #cc0000;
@@ -145,9 +183,21 @@
 
       <form id="form-post">
         <textarea id="post-text" placeholder="Escreva seu post aqui..." required></textarea>
-        <br />
+        <select id="categoria-select" required>
+          <option value="" disabled selected>Escolha uma categoria</option>
+          <option value="Melodias">Melodias</option>
+          <option value="Ideias">Ideias</option>
+          <option value="Composições">Composições</option>
+        </select>
         <button type="submit" id="btn-postar" class="btn">Postar</button>
       </form>
+
+      <select id="filtro-categorias" title="Filtrar posts por categoria">
+        <option value="Todos" selected>Mostrar todos</option>
+        <option value="Melodias">Melodias</option>
+        <option value="Ideias">Ideias</option>
+        <option value="Composições">Composições</option>
+      </select>
 
       <ul id="posts">
         <!-- Posts aparecem aqui -->
@@ -165,34 +215,63 @@
   <script>
     const form = document.getElementById('form-post');
     const textarea = document.getElementById('post-text');
+    const categoriaSelect = document.getElementById('categoria-select');
     const postsList = document.getElementById('posts');
+    const filtroCategorias = document.getElementById('filtro-categorias');
+
+    let posts = [];
+
+    function renderPosts(filter = 'Todos') {
+      postsList.innerHTML = '';
+      const filteredPosts = filter === 'Todos' ? posts : posts.filter(p => p.categoria === filter);
+      filteredPosts.forEach(({texto, categoria}, index) => {
+        const li = document.createElement('li');
+
+        const categoriaSpan = document.createElement('span');
+        categoriaSpan.textContent = categoria;
+        categoriaSpan.className = 'categoria-post';
+
+        const textoSpan = document.createElement('span');
+        textoSpan.textContent = texto;
+        textoSpan.className = 'texto-post';
+
+        const btnExcluir = document.createElement('button');
+        btnExcluir.textContent = 'X';
+        btnExcluir.title = 'Excluir post';
+        btnExcluir.onclick = () => {
+          posts.splice(index, 1);
+          renderPosts(filtroCategorias.value);
+        };
+
+        li.appendChild(categoriaSpan);
+        li.appendChild(textoSpan);
+        li.appendChild(btnExcluir);
+
+        postsList.appendChild(li);
+      });
+    }
 
     form.addEventListener('submit', function(e) {
       e.preventDefault();
       const texto = textarea.value.trim();
-      if (texto === '') return;
+      const categoria = categoriaSelect.value;
 
-      const li = document.createElement('li');
+      if (!texto || !categoria) return;
 
-      // Texto do post em um span para separar do botão
-      const span = document.createElement('span');
-      span.textContent = texto;
-      span.style.flex = '1'; // para ocupar o máximo de espaço
-      li.appendChild(span);
-
-      // Botão excluir
-      const btnExcluir = document.createElement('button');
-      btnExcluir.textContent = 'X';
-      btnExcluir.title = 'Excluir post';
-      btnExcluir.onclick = () => li.remove();
-
-      li.appendChild(btnExcluir);
-
-      postsList.prepend(li);
+      posts.unshift({ texto, categoria }); // adiciona no começo
+      renderPosts(filtroCategorias.value);
 
       textarea.value = '';
+      categoriaSelect.selectedIndex = 0;
       textarea.focus();
     });
+
+    filtroCategorias.addEventListener('change', () => {
+      renderPosts(filtroCategorias.value);
+    });
+
+    // inicializa lista vazia
+    renderPosts();
   </script>
 </body>
 </html>
