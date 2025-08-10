@@ -4,17 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Mentex - Estudos Musicais 8 bits</title>
-  <!-- Importa fonte pixelada do Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
   <style>
-    /* Reset e básico */
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       background: #000;
-      color: #0ff; /* Ciano neon */
+      color: #0ff;
       font-family: 'Press Start 2P', cursive;
       font-size: 12px;
       line-height: 1.4;
@@ -32,7 +28,6 @@
       border-bottom: 3px solid #0ff;
       user-select: none;
     }
-    /* Layout com sidebar */
     .container {
       display: flex;
       height: calc(100vh - 60px);
@@ -66,7 +61,6 @@
       color: #002233;
       font-weight: bold;
     }
-    /* Abas numeradas verticais dentro da sidebar */
     .abas-vertical {
       margin-top: 10px;
       display: flex;
@@ -90,7 +84,6 @@
       color: #002233;
       font-weight: bold;
     }
-    /* Área principal */
     main.content {
       flex: 1;
       padding: 20px;
@@ -98,7 +91,6 @@
       overflow-y: auto;
       user-select: text;
     }
-    /* Form de post */
     form#post-form {
       margin-bottom: 20px;
       display: flex;
@@ -118,7 +110,7 @@
       border-radius: 5px;
       outline: none;
     }
-    form select {
+    form select, form input[type="file"] {
       font-family: 'Press Start 2P', cursive;
       font-size: 10px;
       padding: 5px;
@@ -129,7 +121,7 @@
       cursor: pointer;
     }
     form button {
-      width: 120px;
+      width: 140px;
       padding: 10px;
       font-family: 'Press Start 2P', cursive;
       font-size: 10px;
@@ -145,7 +137,6 @@
     form button:hover {
       background: #00aabb;
     }
-    /* Lista de posts */
     ul#posts-list {
       list-style: none;
       padding: 0;
@@ -180,6 +171,18 @@
     }
     ul#posts-list li button.excluir-btn:hover {
       background: #cc0044;
+    }
+    .audio-player {
+      margin-top: 5px;
+      width: 100%;
+      outline: none;
+      border-radius: 5px;
+      background: #002233;
+    }
+    label[for="tipo-post"] {
+      font-size: 10px;
+      user-select: none;
+      margin-bottom: 5px;
     }
   </style>
 </head>
@@ -220,7 +223,15 @@
     </aside>
     <main class="content">
       <form id="post-form">
+        <label for="tipo-post">Tipo de Post:</label>
+        <select id="tipo-post" name="tipo-post">
+          <option value="texto" selected>Texto</option>
+          <option value="audio">Áudio (até 2 min)</option>
+        </select>
+
         <textarea id="post-text" placeholder="Escreva seu post aqui..."></textarea>
+        <input type="file" id="post-audio" accept="audio/*" style="display:none;" />
+
         <select id="categoria-select">
           <option value="Todos">Todos</option>
           <option value="Melodias">Melodias</option>
@@ -229,177 +240,236 @@
         </select>
         <button type="submit">Postar</button>
       </form>
-      <ul id="posts-list">
-        <!-- Posts aparecem aqui -->
-      </ul>
+      <ul id="posts-list"></ul>
     </main>
   </div>
 
-  <script>
-    // Dados dos posts: objeto com categorias, cada categoria tem abas 1-5 (menos "Todos" que só usa aba 1)
-    const posts = {
-      Todos: { 1: [] },
-      Melodias: { 1: [], 2: [], 3: [], 4: [], 5: [] },
-      Ideias: { 1: [], 2: [], 3: [], 4: [], 5: [] },
-      Composições: { 1: [], 2: [], 3: [], 4: [], 5: [] },
-    };
+<script>
+  const posts = {
+    Todos: { 1: [] },
+    Melodias: { 1: [], 2: [], 3: [], 4: [], 5: [] },
+    Ideias: { 1: [], 2: [], 3: [], 4: [], 5: [] },
+    Composições: { 1: [], 2: [], 3: [], 4: [], 5: [] },
+  };
 
-    let filtroCategoriaAtual = 'Todos';
-    const filtroAbaAtual = {
-      Todos: 1,
-      Melodias: 1,
-      Ideias: 1,
-      Composições: 1
-    };
+  let filtroCategoriaAtual = 'Todos';
+  const filtroAbaAtual = {
+    Todos: 1,
+    Melodias: 1,
+    Ideias: 1,
+    Composições: 1
+  };
 
-    // Botões sidebar
-    const sidebarButtons = document.querySelectorAll('aside.sidebar > button');
-    // Botões abas verticais
-    const abasButtons = document.querySelectorAll('.abas-vertical button');
+  const sidebarButtons = document.querySelectorAll('aside.sidebar > button');
+  const abasButtons = document.querySelectorAll('.abas-vertical button');
+  const postsList = document.getElementById('posts-list');
+  const form = document.getElementById('post-form');
+  const textarea = document.getElementById('post-text');
+  const categoriaSelect = document.getElementById('categoria-select');
+  const tipoPostSelect = document.getElementById('tipo-post');
+  const audioInput = document.getElementById('post-audio');
 
-    const postsList = document.getElementById('posts-list');
-    const form = document.getElementById('post-form');
-    const textarea = document.getElementById('post-text');
-    const categoriaSelect = document.getElementById('categoria-select');
+  // Mostrar ou esconder textarea e audio input conforme tipo escolhido
+  tipoPostSelect.addEventListener('change', () => {
+    if(tipoPostSelect.value === 'audio') {
+      textarea.style.display = 'none';
+      audioInput.style.display = 'block';
+    } else {
+      textarea.style.display = 'block';
+      audioInput.style.display = 'none';
+      audioInput.value = '';
+    }
+  });
 
-    // Renderiza os posts conforme categoria e aba selecionadas
-    function renderPosts() {
-      postsList.innerHTML = '';
-      let listaPosts = [];
+  function renderPosts() {
+    postsList.innerHTML = '';
+    let listaPosts = [];
 
-      if(filtroCategoriaAtual === 'Todos') {
-        listaPosts = posts.Todos[1];
-      } else {
-        listaPosts = posts[filtroCategoriaAtual][filtroAbaAtual[filtroCategoriaAtual]];
-      }
+    if(filtroCategoriaAtual === 'Todos') {
+      listaPosts = posts.Todos[1];
+    } else {
+      listaPosts = posts[filtroCategoriaAtual][filtroAbaAtual[filtroCategoriaAtual]];
+    }
 
-      if (listaPosts.length === 0) {
-        const vazioLi = document.createElement('li');
-        vazioLi.textContent = 'Nenhum post nesta aba.';
-        vazioLi.style.fontStyle = 'italic';
-        vazioLi.style.color = '#004444';
-        postsList.appendChild(vazioLi);
-        return;
-      }
+    if (listaPosts.length === 0) {
+      const vazioLi = document.createElement('li');
+      vazioLi.textContent = 'Nenhum post nesta aba.';
+      vazioLi.style.fontStyle = 'italic';
+      vazioLi.style.color = '#004444';
+      postsList.appendChild(vazioLi);
+      return;
+    }
 
-      listaPosts.forEach((post, index) => {
-        const li = document.createElement('li');
+    listaPosts.forEach((post, index) => {
+      const li = document.createElement('li');
+
+      if(post.tipo === 'texto') {
         li.textContent = post.texto;
+      } else if(post.tipo === 'audio') {
+        li.textContent = post.texto || '';
+        const audioElem = document.createElement('audio');
+        audioElem.controls = true;
+        audioElem.className = 'audio-player';
 
-        const btnExcluir = document.createElement('button');
-        btnExcluir.textContent = 'X';
-        btnExcluir.className = 'excluir-btn';
-        btnExcluir.onclick = () => {
-          listaPosts.splice(index, 1);
-          renderPosts();
-        };
+        // Criar URL temporária para o áudio base64
+        audioElem.src = post.audioURL;
 
-        li.appendChild(btnExcluir);
-        postsList.appendChild(li);
-      });
-    }
-
-    // Função para mostrar/ocultar abas verticalmente ao clicar na categoria
-    function toggleAbas(categoria) {
-      const abas = document.getElementById(`abas-${categoria.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')}`);
-      if (!abas) return false;
-
-      if (abas.style.display === 'flex') {
-        abas.style.display = 'none';
-        return false;
-      } else {
-        abas.style.display = 'flex';
-        return true;
+        li.appendChild(audioElem);
       }
+
+      const btnExcluir = document.createElement('button');
+      btnExcluir.textContent = 'X';
+      btnExcluir.className = 'excluir-btn';
+      btnExcluir.onclick = () => {
+        listaPosts.splice(index, 1);
+        renderPosts();
+      };
+
+      li.appendChild(btnExcluir);
+      postsList.appendChild(li);
+    });
+  }
+
+  function toggleAbas(categoria) {
+    const abas = document.getElementById(`abas-${categoria.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')}`);
+    if (!abas) return false;
+
+    if (abas.style.display === 'flex') {
+      abas.style.display = 'none';
+      return false;
+    } else {
+      abas.style.display = 'flex';
+      return true;
+    }
+  }
+
+  function ativarCategoria(categoria) {
+    if (filtroCategoriaAtual === categoria) {
+      const aberto = toggleAbas(categoria);
+      document.querySelector(`aside.sidebar > button[data-categoria="${categoria}"]`).classList.toggle('active', aberto);
+      return;
     }
 
-    // Função para ativar categoria e abrir/fechar abas correspondentes
-    function ativarCategoria(categoria) {
-      if (filtroCategoriaAtual === categoria) {
-        // Toggle abre/fecha abas
-        const aberto = toggleAbas(categoria);
-        // Atualiza classe active do botão
-        document.querySelector(`aside.sidebar > button[data-categoria="${categoria}"]`).classList.toggle('active', aberto);
+    sidebarButtons.forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`aside.sidebar > button[data-categoria="${categoria}"]`).classList.add('active');
+
+    ['melodias', 'ideias', 'composicoes'].forEach(cat => {
+      const div = document.getElementById(`abas-${cat}`);
+      if(div) div.style.display = 'none';
+    });
+
+    if(categoria !== 'Todos') {
+      const div = document.getElementById(`abas-${categoria.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')}`);
+      if(div) div.style.display = 'flex';
+    }
+
+    filtroCategoriaAtual = categoria;
+
+    renderPosts();
+  }
+
+  function ativarAba(categoria, numero) {
+    if(filtroAbaAtual[categoria] === numero) return;
+
+    filtroAbaAtual[categoria] = numero;
+
+    const abasCategoria = document.querySelectorAll(`#abas-${categoria.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')} button`);
+    abasCategoria.forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.numero === numero.toString());
+    });
+
+    renderPosts();
+  }
+
+  sidebarButtons.forEach(btn => {
+    btn.addEventListener('click', () => ativarCategoria(btn.dataset.categoria));
+  });
+
+  abasButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const categoria = btn.dataset.cat;
+      const num = btn.dataset.numero;
+      ativarAba(categoria, num);
+    });
+  });
+
+  // Limite máximo em segundos (2 minutos = 120s)
+  const MAX_AUDIO_DURATION = 120;
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+
+    const tipoPost = tipoPostSelect.value;
+    const categoria = categoriaSelect.value;
+
+    if(tipoPost === 'texto') {
+      const texto = textarea.value.trim();
+      if(!texto) {
+        alert('Escreva algo para postar.');
         return;
       }
-
-      // Remove active de todos
-      sidebarButtons.forEach(btn => btn.classList.remove('active'));
-      // Seta active no clicado
-      document.querySelector(`aside.sidebar > button[data-categoria="${categoria}"]`).classList.add('active');
-
-      // Fecha todas abas
-      ['melodias', 'ideias', 'composicoes'].forEach(cat => {
-        const div = document.getElementById(`abas-${cat}`);
-        if(div) div.style.display = 'none';
-      });
-
-      // Abre abas da categoria clicada (se não for Todos)
-      if(categoria !== 'Todos') {
-        const div = document.getElementById(`abas-${categoria.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')}`);
-        if(div) div.style.display = 'flex';
-      }
-
-      filtroCategoriaAtual = categoria;
-
-      renderPosts();
-    }
-
-    // Função para ativar aba numerada
-    function ativarAba(categoria, numero) {
-      if(filtroAbaAtual[categoria] === numero) return;
-
-      filtroAbaAtual[categoria] = numero;
-
-      // Remove active de todas as abas da categoria
-      const abasCategoria = document.querySelectorAll(`#abas-${categoria.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')} button`);
-      abasCategoria.forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.numero === numero.toString());
-      });
-
-      renderPosts();
-    }
-
-    // Eventos sidebar categorias
-    sidebarButtons.forEach(btn => {
-      btn.addEventListener('click', () => ativarCategoria(btn.dataset.categoria));
-    });
-
-    // Eventos abas numeradas
-    abasButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const categoria = btn.dataset.cat;
-        const num = btn.dataset.numero;
-        ativarAba(categoria, num);
-      });
-    });
-
-    // Ao postar
-    form.addEventListener('submit', e => {
-      e.preventDefault();
-      const texto = textarea.value.trim();
-      const categoria = categoriaSelect.value;
-
-      if(!texto) return alert('Escreva algo para postar.');
-
-      // Adiciona o post na aba 1 da categoria selecionada
-      posts[categoria][1].unshift({ texto, categoria });
-
+      posts[categoria][1].unshift({ tipo: 'texto', texto, categoria });
       textarea.value = '';
       categoriaSelect.value = 'Todos';
-
-      // Atualiza para mostrar os posts na categoria e aba correta
       ativarCategoria(categoria);
       ativarAba(categoria, 1);
-    });
+    } else if(tipoPost === 'audio') {
+      const arquivo = audioInput.files[0];
+      if(!arquivo) {
+        alert('Escolha um arquivo de áudio.');
+        return;
+      }
+      if(!arquivo.type.startsWith('audio/')) {
+        alert('Por favor, envie um arquivo de áudio válido.');
+        return;
+      }
 
-    // Inicializa mostrando Todos e aba 1 ativa
-    ativarCategoria('Todos');
-    ativarAba('Todos', 1);
-    ativarAba('Melodias', 1);
-    ativarAba('Ideias', 1);
-    ativarAba('Composições', 1);
+      // Verificar duração do áudio
+      const audioElem = new Audio();
+      const fileURL = URL.createObjectURL(arquivo);
 
-  </script>
+      audioElem.src = fileURL;
+      audioElem.load();
+
+      audioElem.onloadedmetadata = () => {
+        if(audioElem.duration > MAX_AUDIO_DURATION) {
+          alert('Áudio muito longo! Máximo permitido: 2 minutos.');
+          URL.revokeObjectURL(fileURL);
+          return;
+        }
+
+        // Ler arquivo como base64 para armazenar no post
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          const base64Audio = event.target.result;
+          posts[categoria][1].unshift({ tipo: 'audio', audioURL: base64Audio, texto: '', categoria });
+          URL.revokeObjectURL(fileURL);
+
+          audioInput.value = '';
+          categoriaSelect.value = 'Todos';
+          tipoPostSelect.value = 'texto';
+          textarea.style.display = 'block';
+          audioInput.style.display = 'none';
+
+          ativarCategoria(categoria);
+          ativarAba(categoria, 1);
+        };
+        reader.readAsDataURL(arquivo);
+      };
+
+      audioElem.onerror = () => {
+        alert('Erro ao carregar o áudio. Tente outro arquivo.');
+        URL.revokeObjectURL(fileURL);
+      };
+    }
+  });
+
+  // Inicialização
+  ativarCategoria('Todos');
+  ativarAba('Todos', 1);
+  ativarAba('Melodias', 1);
+  ativarAba('Ideias', 1);
+  ativarAba('Composições', 1);
+</script>
 </body>
 </html>
