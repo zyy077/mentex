@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>VYYZ - Produto com Compra</title>
+  <title>VYYZ - Loja de Tecnologia</title>
   <style>
     body {
       margin: 0;
@@ -11,107 +11,245 @@
       background: linear-gradient(180deg, #0a0a0a, #001f3f);
       color: white;
     }
+
+    header {
+      background: #0d1b2a;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    }
+
+    header h1 {
+      color: #00aaff;
+      margin: 0;
+      letter-spacing: 3px;
+      font-weight: 900;
+    }
+
+    nav a {
+      color: white;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+
+    nav a:hover {
+      color: #00aaff;
+    }
+
+    .banner {
+      background: url('fundo.png') no-repeat center center/cover;
+      padding: 80px 20px;
+      text-align: center;
+    }
+
+    .banner h2 {
+      font-size: 2.5rem;
+      color: #00aaff;
+      text-shadow: 2px 2px 5px black;
+      letter-spacing: 1.5px;
+    }
+
+    .banner p {
+      font-size: 1.2rem;
+      color: #ccc;
+    }
+
+    .produtos {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      padding: 40px;
+    }
+
     .produto {
       background: #1b263b;
       padding: 20px;
       border-radius: 10px;
-      max-width: 300px;
-      margin: 40px auto;
       text-align: center;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease;
     }
+
+    .produto:hover {
+      transform: scale(1.05);
+    }
+
     .produto img {
       max-width: 100%;
       border-radius: 10px;
     }
+
     .produto h3 {
       margin: 15px 0 10px;
       color: #00aaff;
     }
+
     .produto p {
       color: #ccc;
-      font-size: 1rem;
+      font-size: 0.9rem;
+      min-height: 40px;
     }
-    button, a.button-link {
+
+    .btn {
       background: #00aaff;
       border: none;
-      padding: 10px 20px;
+      padding: 10px 15px;
       color: white;
       font-size: 1rem;
       border-radius: 5px;
       cursor: pointer;
-      margin: 5px;
-      text-decoration: none;
-      display: inline-block;
       transition: background 0.3s;
+      margin: 5px 5px 0 5px;
+      width: 130px;
     }
-    button:hover, a.button-link:hover {
+
+    .btn:hover {
       background: #0088cc;
     }
+
     #carrinho {
-      max-width: 300px;
+      max-width: 900px;
       margin: 20px auto;
       background: #0d1b2a;
-      padding: 10px;
+      padding: 20px;
       border-radius: 10px;
       color: #00aaff;
+    }
+
+    #carrinho h4 {
+      margin-top: 0;
+    }
+
+    #lista-carrinho {
+      list-style: none;
+      padding-left: 0;
+      max-height: 200px;
+      overflow-y: auto;
+      margin-bottom: 15px;
+    }
+
+    #lista-carrinho li {
+      padding: 8px;
+      border-bottom: 1px solid #004080;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #lista-carrinho li button {
+      background: #cc0000;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: background 0.3s;
+    }
+
+    #lista-carrinho li button:hover {
+      background: #aa0000;
+    }
+
+    #finalizar {
+      background: #009900;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: white;
+      transition: background 0.3s;
+    }
+
+    #finalizar:hover {
+      background: #007700;
     }
   </style>
 </head>
 <body>
 
-  <section class="produto">
-    <img src="imagens/microfone-behringer-dourado.jpg" alt="Microfone Behringer C-1 Condensador Cardioide dourado" />
-    <h3>Microfone Behringer C-1 Condensador Cardioide</h3>
-    <p>Microfone condensador cardioide na cor dourada. Novo | +5mil vendidos</p>
-    
-    <!-- Botão link externo -->
-    <a href="https://www.amazon.com.br/dp/B001J4N1BK" target="_blank" rel="noopener noreferrer" class="button-link">
-      Comprar no Amazon
-    </a>
+  <header>
+    <h1>VYYZ</h1>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#">Produtos</a>
+      <a href="#">Ofertas</a>
+      <a href="#">Contato</a>
+    </nav>
+  </header>
 
-    <!-- Botão adicionar ao carrinho -->
-    <button onclick="adicionarAoCarrinho()">
-      Adicionar ao carrinho
-    </button>
-
-    <!-- Formulário PayPal -->
-    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank" style="margin-top:10px;">
-      <input type="hidden" name="cmd" value="_xclick" />
-      <input type="hidden" name="business" value="seu-email-paypal@example.com" />
-      <input type="hidden" name="item_name" value="Microfone Behringer C-1 Condensador Cardioide" />
-      <input type="hidden" name="amount" value="199.99" />
-      <input type="hidden" name="currency_code" value="BRL" />
-      <button type="submit">Pagar com PayPal</button>
-    </form>
+  <section class="banner">
+    <h2>As Melhores Ofertas em Tecnologia</h2>
+    <p>Compre seus gadgets favoritos com segurança e o melhor preço</p>
   </section>
 
-  <!-- Carrinho -->
+  <section class="produtos">
+    <!-- Produto 1 real -->
+    <div class="produto">
+      <img src="imagens/microfone-behringer-dourado.jpg" alt="Microfone Behringer C-1 Condensador Cardioide dourado" />
+      <h3>Microfone Behringer C-1 Condensador Cardioide</h3>
+      <p>Microfone condensador cardioide na cor dourada. Novo | +5mil vendidos</p>
+      <button class="btn" onclick="alert('Comprar agora ainda não está ativo!')">Comprar agora</button>
+      <button class="btn" onclick="adicionarAoCarrinho('Microfone Behringer C-1 Condensador Cardioide', 199.99)">Adicionar ao carrinho</button>
+    </div>
+    
+    <!-- Produtos placeholders -->
+    <div class="produto">
+      <img src="https://via.placeholder.com/220x160" alt="Produto 2" />
+      <h3>Produto 2</h3>
+      <p>Descrição do produto 2.</p>
+      <button class="btn" onclick="alert('Comprar agora ainda não está ativo!')">Comprar agora</button>
+      <button class="btn" onclick="adicionarAoCarrinho('Produto 2', 99.99)">Adicionar ao carrinho</button>
+    </div>
+
+    <!-- Você pode adicionar mais produtos aqui seguindo o mesmo modelo -->
+  </section>
+
   <section id="carrinho">
-    <h4>Carrinho</h4>
+    <h4>Carrinho de Compras</h4>
     <ul id="lista-carrinho"></ul>
+    <button id="finalizar" onclick="finalizarCompra()">Finalizar Compra</button>
   </section>
 
   <script>
     const carrinho = [];
 
-    function adicionarAoCarrinho() {
-      const produto = {
-        nome: "Microfone Behringer C-1 Condensador Cardioide",
-        preco: 199.99
-      };
-      carrinho.push(produto);
+    function adicionarAoCarrinho(nome, preco) {
+      carrinho.push({ nome, preco });
       atualizarCarrinho();
     }
 
     function atualizarCarrinho() {
       const lista = document.getElementById('lista-carrinho');
       lista.innerHTML = '';
+
       carrinho.forEach((item, index) => {
         const li = document.createElement('li');
         li.textContent = `${item.nome} - R$ ${item.preco.toFixed(2)}`;
+
+        const btnRemover = document.createElement('button');
+        btnRemover.textContent = 'X';
+        btnRemover.onclick = () => {
+          carrinho.splice(index, 1);
+          atualizarCarrinho();
+        };
+
+        li.appendChild(btnRemover);
         lista.appendChild(li);
       });
+    }
+
+    function finalizarCompra() {
+      if (carrinho.length === 0) {
+        alert('Seu carrinho está vazio!');
+        return;
+      }
+      alert('Funcionalidade de finalização de compra ainda não implementada.');
     }
   </script>
 
