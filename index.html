@@ -152,7 +152,8 @@
       box-sizing: border-box;
       font-family: 'Segoe UI', sans-serif;
     }
-    #categoria-select {
+    #categoria-select,
+    #subcategoria-select {
       margin-top: 10px;
       font-size: 1rem;
       padding: 8px;
@@ -165,6 +166,9 @@
       box-sizing: border-box;
       font-family: 'Segoe UI', sans-serif;
       cursor: pointer;
+    }
+    #subcategoria-select {
+      display: none;
     }
     #btn-postar {
       margin-top: 10px;
@@ -209,6 +213,30 @@
     #posts li button:hover {
       background: #aa0000;
     }
+    /* Abas numeradas para melodias */
+    .abas-melodias {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .aba-numero {
+      background: transparent;
+      border: 2px solid #00aaff;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s;
+      user-select: none;
+    }
+    .aba-numero.active {
+      background: #00aaff;
+      color: #001f3f;
+      border-color: #0088cc;
+    }
+
     /* Responsivo */
     @media (max-width: 768px) {
       .container {
@@ -229,6 +257,9 @@
         flex: 1;
         font-size: 1rem;
         padding: 8px 5px;
+      }
+      .abas-melodias {
+        justify-content: center;
       }
     }
   </style>
@@ -265,8 +296,25 @@
             <option value="Ideias">Ideias</option>
             <option value="Composições">Composições</option>
           </select>
+          <select id="subcategoria-select" >
+            <option value="" disabled selected>Escolha a aba (1 a 5)</option>
+            <option value="1">Aba 1</option>
+            <option value="2">Aba 2</option>
+            <option value="3">Aba 3</option>
+            <option value="4">Aba 4</option>
+            <option value="5">Aba 5</option>
+          </select>
           <button type="submit" id="btn-postar" class="btn">Postar</button>
         </form>
+
+        <!-- Abas só aparecem na categoria Melodias -->
+        <div id="abas-melodias" class="abas-melodias" style="display:none;">
+          <button class="aba-numero active" data-numero="1">1</button>
+          <button class="aba-numero" data-numero="2">2</button>
+          <button class="aba-numero" data-numero="3">3</button>
+          <button class="aba-numero" data-numero="4">4</button>
+          <button class="aba-numero" data-numero="5">5</button>
+        </div>
 
         <ul id="posts">
           <!-- Posts aparecem aqui -->
@@ -286,19 +334,47 @@
     const form = document.getElementById('form-post');
     const textarea = document.getElementById('post-text');
     const categoriaSelect = document.getElementById('categoria-select');
+    const subcategoriaSelect = document.getElementById('subcategoria-select');
     const postsList = document.getElementById('posts');
     const sidebarButtons = document.querySelectorAll('aside.sidebar button');
+    const abasMelodias = document.getElementById('abas-melodias');
+    const abasButtons = document.querySelectorAll('.aba-numero');
 
     let posts = [];
+    let filtroCategoriaAtual = 'Todos';
+    let filtroAbaMelodias = '1'; // aba 1 selecionada por padrão
 
-    function renderPosts(filtro = 'Todos') {
+    // Exibir ou ocultar seletor de subcategoria no formulário conforme categoria escolhida
+    categoriaSelect.addEventListener('change', () => {
+      if (categoriaSelect.value === 'Melodias') {
+        subcategoriaSelect.style.display = 'block';
+        subcategoriaSelect.required = true;
+      } else {
+        subcategoriaSelect.style.display = 'none';
+        subcategoriaSelect.value = '';
+        subcategoriaSelect.required = false;
+      }
+    });
+
+    // Renderiza os posts conforme filtros
+    function renderPosts() {
       postsList.innerHTML = '';
-      const filteredPosts = filtro === 'Todos' ? posts : posts.filter(p => p.categoria === filtro);
-      filteredPosts.forEach(({texto, categoria}, index) => {
+
+      let filtered = [];
+      if (filtroCategoriaAtual === 'Melodias') {
+        // filtrar posts categoria Melodias e aba igual filtroAbaMelodias
+        filtered = posts.filter(p => p.categoria === 'Melodias' && p.subcategoria === filtroAbaMelodias);
+      } else if (filtroCategoriaAtual === 'Todos') {
+        filtered = posts;
+      } else {
+        filtered = posts.filter(p => p.categoria === filtroCategoriaAtual);
+      }
+
+      filtered.forEach(({texto, categoria, subcategoria}, index) => {
         const li = document.createElement('li');
 
         const categoriaSpan = document.createElement('span');
-        categoriaSpan.textContent = categoria;
+        categoriaSpan.textContent = categoria === 'Melodias' ? `${categoria} ${subcategoria}` : categoria;
         categoriaSpan.className = 'categoria-post';
 
         const textoSpan = document.createElement('span');
@@ -309,8 +385,8 @@
         btnExcluir.textContent = 'X';
         btnExcluir.title = 'Excluir post';
         btnExcluir.onclick = () => {
-          posts.splice(posts.indexOf(filteredPosts[index]), 1);
-          renderPosts(filtro);
+          posts.splice(posts.indexOf(filtered[index]), 1);
+          renderPosts();
         };
 
         li.appendChild(categoriaSpan);
@@ -321,36 +397,68 @@
       });
     }
 
-    form.addEventListener('submit', function(e) {
+    // Ao enviar post
+    form.addEventListener('submit', e => {
       e.preventDefault();
       const texto = textarea.value.trim();
       const categoria = categoriaSelect.value;
+      const subcategoria = subcategoriaSelect.value || '';
 
-      if (!texto || !categoria) return;
+      if (!texto || !categoria || (categoria === 'Melodias' && !subcategoria)) return;
 
-      posts.unshift({ texto, categoria }); // adiciona no começo
-      renderPosts(getCurrentFilter());
+      posts.unshift({ texto, categoria, subcategoria });
+      renderPosts();
 
       textarea.value = '';
       categoriaSelect.selectedIndex = 0;
+      subcategoriaSelect.value = '';
+      subcategoriaSelect.style.display = 'none';
+      subcategoriaSelect.required = false;
       textarea.focus();
     });
 
-    function getCurrentFilter() {
-      const activeBtn = document.querySelector('aside.sidebar button.active');
-      return activeBtn ? activeBtn.dataset.categoria : 'Todos';
+    // Função pra atualizar abas numeradas e filtro categoria
+    function ativarCategoria(categoria) {
+      filtroCategoriaAtual = categoria;
+
+      // Ativa ou desativa as abas melodias
+      if (categoria === 'Melodias') {
+        abasMelodias.style.display = 'flex';
+      } else {
+        abasMelodias.style.display = 'none';
+      }
+
+      // Remove active dos botões da sidebar e seta no selecionado
+      sidebarButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.categoria === categoria));
+
+      // Se categoria não for melodias, renderiza direto
+      if (categoria !== 'Melodias') {
+        renderPosts();
+      } else {
+        ativarAbaMelodias(filtroAbaMelodias);
+      }
     }
 
-    sidebarButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        sidebarButtons.forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
-        renderPosts(button.dataset.categoria);
-      });
+    // Ativa aba numerada das melodias
+    function ativarAbaMelodias(numero) {
+      filtroAbaMelodias = numero;
+
+      abasButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.numero === numero));
+      renderPosts();
+    }
+
+    // Eventos sidebar
+    sidebarButtons.forEach(btn => {
+      btn.addEventListener('click', () => ativarCategoria(btn.dataset.categoria));
     });
 
-    // inicializa lista vazia
-    renderPosts();
+    // Eventos abas melodias
+    abasButtons.forEach(btn => {
+      btn.addEventListener('click', () => ativarAbaMelodias(btn.dataset.numero));
+    });
+
+    // Inicializa
+    ativarCategoria('Todos');
   </script>
 </body>
 </html>
