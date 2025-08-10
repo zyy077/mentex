@@ -1,162 +1,264 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TechShop - Sua Loja de Tecnologia</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(180deg, #0a0a0a, #001f3f);
-            color: white;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TechShop - Home</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(180deg, #0a0a0a, #001f3f);
+      color: white;
+    }
 
-        header {
-            background: #0d1b2a;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-        }
+    header {
+      background: #0d1b2a;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    }
 
-        header h1 {
-            color: #00aaff;
-            margin: 0;
-        }
+    header h1 {
+      color: #00aaff;
+      margin: 0;
+    }
 
-        nav a {
-            color: white;
-            margin: 0 15px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: color 0.3s;
-        }
+    nav a {
+      color: white;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
 
-        nav a:hover {
-            color: #00aaff;
-        }
+    nav a:hover {
+      color: #00aaff;
+    }
 
-        .banner {
-            background: url('fundo.png') no-repeat center center/cover;
-            padding: 80px 20px;
-            text-align: center;
-        }
+    .banner {
+      background: url('fundo.png') no-repeat center center/cover;
+      padding: 80px 20px;
+      text-align: center;
+    }
 
-        .banner h2 {
-            font-size: 2.5rem;
-            color: #00aaff;
-            text-shadow: 2px 2px 5px black;
-        }
+    .banner h2 {
+      font-size: 2.5rem;
+      color: #00aaff;
+      text-shadow: 2px 2px 5px black;
+    }
 
-        .banner p {
-            font-size: 1.2rem;
-            color: #ccc;
-        }
+    .banner p {
+      font-size: 1.2rem;
+      color: #ccc;
+    }
 
-        .produtos {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            padding: 40px;
-        }
+    .produtos {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      padding: 40px;
+    }
 
-        .produto {
-            background: #1b263b;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            transition: transform 0.3s ease;
-        }
+    .produto {
+      background: #1b263b;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease;
+    }
 
-        .produto:hover {
-            transform: scale(1.05);
-        }
+    .produto:hover {
+      transform: scale(1.05);
+    }
 
-        .produto img {
-            max-width: 100%;
-            border-radius: 10px;
-        }
+    .produto img {
+      max-width: 100%;
+      border-radius: 10px;
+    }
 
-        .produto h3 {
-            margin: 15px 0 10px;
-            color: #00aaff;
-        }
+    .produto h3 {
+      margin: 15px 0 10px;
+      color: #00aaff;
+    }
 
-        .produto p {
-            color: #ccc;
-            font-size: 0.9rem;
-        }
+    .produto p {
+      color: #ccc;
+      font-size: 0.9rem;
+    }
 
-        .produto button {
-            background: #00aaff;
-            border: none;
-            padding: 10px 15px;
-            color: white;
-            font-size: 1rem;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
+    .produto button {
+      background: #00aaff;
+      border: none;
+      padding: 10px 15px;
+      color: white;
+      font-size: 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
 
-        .produto button:hover {
-            background: #0088cc;
-        }
+    .produto button:hover {
+      background: #0088cc;
+    }
 
-        footer {
-            background: #0d1b2a;
-            text-align: center;
-            padding: 15px;
-            color: #777;
-            margin-top: 20px;
-        }
-    </style>
+    footer {
+      background: #0d1b2a;
+      text-align: center;
+      padding: 15px;
+      color: #777;
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
 
-    <header>
-        <h1>TechShop</h1>
-        <nav>
-            <a href="#">Home</a>
-            <a href="#">Produtos</a>
-            <a href="#">Ofertas</a>
-            <a href="#">Contato</a>
-        </nav>
-    </header>
+  <header>
+    <h1>TechShop</h1>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#">Produtos</a>
+      <a href="#">Ofertas</a>
+      <a href="#">Contato</a>
+    </nav>
+  </header>
 
-    <section class="banner">
-        <h2>As Melhores Ofertas em Tecnologia</h2>
-        <p>Compre seus gadgets favoritos com segurança e o melhor preço</p>
-    </section>
+  <section class="banner">
+    <h2>As Melhores Ofertas em Tecnologia</h2>
+    <p>Compre seus gadgets favoritos com segurança e o melhor preço</p>
+  </section>
 
-    <section class="produtos">
-        <div class="produto">
-            <img src="https://via.placeholder.com/250x200" alt="Notebook Gamer">
-            <h3>Notebook Gamer</h3>
-            <p>Desempenho máximo para jogos e trabalho.</p>
-            <button>Comprar</button>
-        </div>
+  <section class="produtos">
+    <!-- 20 produtos -->
+    <!-- Vou usar um loop no código, mas como é HTML estático, replico manualmente -->
+    <div class="produto">
+      <img src="https://via.placeholder.com/220x160" alt="Produto 1" />
+      <h3>Produto 1</h3>
+      <p>Descrição do produto 1.</p>
+      <button>Comprar</button>
+    </div>
+    <div class="produto">
+      <img src="https://via.placeholder.com/220x160" alt="Produto 2" />
+      <h3>Produto 2</h3>
+      <p>Descrição do produto 2.</p>
+      <button>Comprar</button>
+    </div>
+    <div class="produto">
+      <img src="https://via.placeholder.com/220x160" alt="Produto 3" />
+      <h3>Produto 3</h3>
+      <p>Descrição do produto 3.</p>
+      <button>Comprar</button>
+    </div>
+    <div class="produto">
+      <img src="https://via.placeholder.com/220x160" alt="Produto 4" />
+      <h3>Produto 4</h3>
+      <p>Descrição do produto 4.</p>
+      <button>Comprar</button>
+    </div>
+    <div class="produto">
+      <img src="https://via.placeholder.com/220x160" alt="Produto 5" />
+      <h3>Produto 5</h3>
+      <p>Descrição do produto 5.</p>
+      <button>Comprar</button>
+    </div>
+    <div class="produto">
+      <img src="https://via.placeholder.com/220x160" alt="Produto 6" />
+      <h3>Produto 6</h3>
+      <p>Descrição do produto 6.</p>
+      <button>Comprar</button>
+    </div>
+    <div class="produto">
+      <img src="https://via.placeholder.com/220x160" alt="Produto 7" />
+      <h3>Produto 7</h3>
+      <p>Descrição do produto 7.</p>
+      <button>Comprar</button>
+    </div>
+    <div class="produto">
+      <img src="https://via.placeholder.com/220x160" alt="Produto 8" />
+      <h3>Produto 8</h3>
+      <p>Descrição do produto 8.</p>
+      <button>Comprar</button>
+    </div>
+    <div class="produto">
+      <img src="https://via.placeholder.com/220x160" alt="Produto 9" />
+      <h3>Produto 9</h3>
+      <p>Descrição do produto 9.</p>
+      <button>Comprar</button>
+    </div>
+    <div class="produto">
+      <img src="https://via.placeholder.com/220x160" alt="Produto 10" />
+      <h3>Produto 10</h3>
+      <p>Descrição do produto 10.</p>
+      <button>Comprar</button>
+    </div>
+    <div class="produto">
+      <img src="https://via.placeholder.com/220x160" alt="Produto 11" />
+      <h3>Produto 11</h3>
+      <p>Descrição do produto 11.</p>
+      <button>Comprar</button>
+    </div>
+    <div class="produto">
+      <img src="https://via.placeholder.com/220x160" alt="Produto 12" />
+      <h3>Produto 12</h3>
+      <p>Descrição do produto 12.</p>
+      <button>Comprar</button>
+    </div>
+    <div class="produto">
+      <img src="https://via.placeholder.com/220x160" alt="Produto 13" />
+      <h3>Produto 13</h3>
+      <p>Descrição do produto 13.</p>
+      <button>Comprar</button>
+    </div>
+    <div class="produto">
+      <img src="https://via.placeholder.com/220x160" alt="Produto 14" />
+      <h3>Produto 14</h3>
+      <p>Descrição do produto 14.</p>
+      <button>Comprar</button>
+    </div>
+    <div class="produto">
+      <img src="https://via.placeholder.com/220x160" alt="Produto 15" />
+      <h3>Produto 15</h3>
+      <p>Descrição do produto 15.</p>
+      <button>Comprar</button>
+    </div>
+    <div class="produto">
+      <img src="https://via.placeholder.com/220x160" alt="Produto 16" />
+      <h3>Produto 16</h3>
+      <p>Descrição do produto 16.</p>
+      <button>Comprar</button>
+    </div>
+    <div class="produto">
+      <img src="https://via.placeholder.com/220x160" alt="Produto 17" />
+      <h3>Produto 17</h3>
+      <p>Descrição do produto 17.</p>
+      <button>Comprar</button>
+    </div>
+    <div class="produto">
+      <img src="https://via.placeholder.com/220x160" alt="Produto 18" />
+      <h3>Produto 18</h3>
+      <p>Descrição do produto 18.</p>
+      <button>Comprar</button>
+    </div>
+    <div class="produto">
+      <img src="https://via.placeholder.com/220x160" alt="Produto 19" />
+      <h3>Produto 19</h3>
+      <p>Descrição do produto 19.</p>
+      <button>Comprar</button>
+    </div>
+    <div class="produto">
+      <img src="https://via.placeholder.com/220x160" alt="Produto 20" />
+      <h3>Produto 20</h3>
+      <p>Descrição do produto 20.</p>
+      <button>Comprar</button>
+    </div>
+  </section>
 
-        <div class="produto">
-            <img src="https://via.placeholder.com/250x200" alt="Smartphone 5G">
-            <h3>Smartphone 5G</h3>
-            <p>Velocidade e tecnologia de última geração.</p>
-            <button>Comprar</button>
-        </div>
-
-        <div class="produto">
-            <img src="https://via.placeholder.com/250x200" alt="Fone Bluetooth">
-            <h3>Fone Bluetooth</h3>
-            <p>Som cristalino e conexão sem fio estável.</p>
-            <button>Comprar</button>
-        </div>
-    </section>
-
-    <footer>
-        © 2025 TechShop - Todos os direitos reservados
-    </footer>
+  <footer>
+    © 2025 TechShop - Todos os direitos reservados
+  </footer>
 
 </body>
 </html>
