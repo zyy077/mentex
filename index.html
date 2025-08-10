@@ -6,6 +6,7 @@
   <title>Mentex - Estudos Musicais 8 bits</title>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
   <style>
+    /* (mesmo CSS do código anterior, não vou repetir para economizar espaço) */
     * { box-sizing: border-box; }
     body {
       margin: 0;
@@ -245,7 +246,8 @@
   </div>
 
 <script>
-  const posts = {
+  // Tenta carregar posts do localStorage, ou inicializa se não existir
+  let posts = JSON.parse(localStorage.getItem('mentexPosts')) || {
     Todos: { 1: [] },
     Melodias: { 1: [], 2: [], 3: [], 4: [], 5: [] },
     Ideias: { 1: [], 2: [], 3: [], 4: [], 5: [] },
@@ -269,7 +271,6 @@
   const tipoPostSelect = document.getElementById('tipo-post');
   const audioInput = document.getElementById('post-audio');
 
-  // Mostrar ou esconder textarea e audio input conforme tipo escolhido
   tipoPostSelect.addEventListener('change', () => {
     if(tipoPostSelect.value === 'audio') {
       textarea.style.display = 'none';
@@ -280,6 +281,10 @@
       audioInput.value = '';
     }
   });
+
+  function salvarPosts() {
+    localStorage.setItem('mentexPosts', JSON.stringify(posts));
+  }
 
   function renderPosts() {
     postsList.innerHTML = '';
@@ -310,10 +315,7 @@
         const audioElem = document.createElement('audio');
         audioElem.controls = true;
         audioElem.className = 'audio-player';
-
-        // Criar URL temporária para o áudio base64
         audioElem.src = post.audioURL;
-
         li.appendChild(audioElem);
       }
 
@@ -322,6 +324,7 @@
       btnExcluir.className = 'excluir-btn';
       btnExcluir.onclick = () => {
         listaPosts.splice(index, 1);
+        salvarPosts();
         renderPosts();
       };
 
@@ -409,6 +412,7 @@
         return;
       }
       posts[categoria][1].unshift({ tipo: 'texto', texto, categoria });
+      salvarPosts();
       textarea.value = '';
       categoriaSelect.value = 'Todos';
       ativarCategoria(categoria);
@@ -424,7 +428,6 @@
         return;
       }
 
-      // Verificar duração do áudio
       const audioElem = new Audio();
       const fileURL = URL.createObjectURL(arquivo);
 
@@ -438,11 +441,12 @@
           return;
         }
 
-        // Ler arquivo como base64 para armazenar no post
         const reader = new FileReader();
         reader.onload = function(event) {
           const base64Audio = event.target.result;
           posts[categoria][1].unshift({ tipo: 'audio', audioURL: base64Audio, texto: '', categoria });
+          salvarPosts();
+
           URL.revokeObjectURL(fileURL);
 
           audioInput.value = '';
