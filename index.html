@@ -77,6 +77,38 @@
     .btn:hover {
       background: #0088cc;
     }
+    /* Formulário de post */
+    #form-post {
+      margin-bottom: 30px;
+    }
+    #post-text {
+      width: 100%;
+      min-height: 80px;
+      resize: vertical;
+      padding: 10px;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: none;
+      outline: none;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    #btn-postar {
+      margin-top: 10px;
+    }
+    /* Lista de posts */
+    #posts {
+      list-style: none;
+      padding-left: 0;
+    }
+    #posts li {
+      background: #1b263b;
+      margin-bottom: 15px;
+      padding: 15px 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      white-space: pre-wrap; /* respeita quebras de linha */
+    }
   </style>
 </head>
 <body>
@@ -93,7 +125,18 @@
       <h2>Bem-vindo ao Mentex</h2>
       <p>Este é o seu site para estudos musicais, com dicas e definições para instrumentos e termos musicais.</p>
       <p>Explore nosso conteúdo e aproveite para conhecer também o site VYYZ, nosso parceiro de tecnologia.</p>
+
+      <form id="form-post">
+        <textarea id="post-text" placeholder="Escreva seu post aqui..." required></textarea>
+        <br />
+        <button type="submit" id="btn-postar" class="btn">Postar</button>
+      </form>
+
+      <ul id="posts">
+        <!-- Posts aparecem aqui -->
+      </ul>
     </section>
+
     <section id="sobre">
       <h2>Sobre o Mentex</h2>
       <p>O Mentex é uma plataforma dedicada ao estudo e à prática musical, oferecendo recursos para músicos de todos os níveis.</p>
@@ -101,5 +144,24 @@
       <a href="https://zyy077.github.io/vyyz/" target="_blank" rel="noopener noreferrer" class="btn">Visitar VYYZ</a>
     </section>
   </main>
+
+  <script>
+    const form = document.getElementById('form-post');
+    const textarea = document.getElementById('post-text');
+    const postsList = document.getElementById('posts');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const texto = textarea.value.trim();
+      if (texto === '') return;
+
+      const li = document.createElement('li');
+      li.textContent = texto;
+      postsList.prepend(li); // adiciona no topo da lista
+
+      textarea.value = '';
+      textarea.focus();
+    });
+  </script>
 </body>
 </html>
