@@ -46,7 +46,6 @@
       color: #00aaff;
     }
 
-    /* Layout principal: sidebar + main */
     .container {
       flex: 1;
       display: flex;
@@ -58,7 +57,6 @@
       width: 100%;
     }
 
-    /* Sidebar */
     aside.sidebar {
       width: 260px;
       background: #0d1b2a;
@@ -94,19 +92,23 @@
       text-align: center;
       user-select: none;
     }
-    aside.sidebar button:hover,
+    aside.sidebar button:hover {
+      background: #004080;
+    }
     aside.sidebar button.active {
       background: #00aaff;
       color: #001f3f;
       border-color: #0088cc;
     }
 
-    /* Abas numeradas verticais para cada categoria */
     .abas-vertical {
       display: none;
       flex-direction: column;
       gap: 10px;
       margin-top: 10px;
+    }
+    .abas-vertical.active {
+      display: flex;
     }
     .aba-numero-vertical {
       background: transparent;
@@ -126,7 +128,6 @@
       border-color: #0088cc;
     }
 
-    /* Main conteúdo */
     main {
       flex: 1;
       max-width: 100%;
@@ -162,7 +163,6 @@
     .btn:hover {
       background: #0088cc;
     }
-    /* Formulário de post */
     #form-post {
       margin-bottom: 30px;
     }
@@ -195,7 +195,6 @@
     #btn-postar {
       margin-top: 10px;
     }
-    /* Lista de posts */
     #posts {
       list-style: none;
       padding-left: 0;
@@ -235,7 +234,6 @@
     #posts li button:hover {
       background: #aa0000;
     }
-    /* Mensagem de categoria desabilitada */
     #categoria-msg {
       font-style: italic;
       color: #888;
@@ -246,8 +244,6 @@
       text-align: center;
       user-select: none;
     }
-
-    /* Responsivo */
     @media (max-width: 768px) {
       .container {
         flex-direction: column;
@@ -335,15 +331,9 @@
           <button type="submit" id="btn-postar" class="btn">Postar</button>
         </form>
 
-        <ul id="posts">
-          <!-- Posts aparecem aqui -->
-        </ul>
+        <ul id="posts"></ul>
 
-        <!-- Mensagem que aparece nas categorias que não mostram posts -->
-        <div id="categoria-msg" style="display:none;">
-          Posts dessa categoria estão desabilitados.<br />
-          Selecione uma aba à esquerda (1 a 5).
-        </div>
+        <div id="categoria-msg" style="display:none;"></div>
       </section>
 
       <section id="sobre">
@@ -364,8 +354,9 @@
     const abasMelodias = document.getElementById('abas-melodias-vertical');
     const abasIdeias = document.getElementById('abas-ideias-vertical');
     const abasComposicoes = document.getElementById('abas-composicoes-vertical');
-    const abasButtons = document.querySelectorAll('.aba-numero-vertical');
     const categoriaMsg = document.getElementById('categoria-msg');
+
+    const abasButtons = document.querySelectorAll('.aba-numero-vertical');
 
     let posts = [];
     let filtroCategoriaAtual = 'Todos';
@@ -376,33 +367,54 @@
     };
 
     function ocultarAbasTodas() {
-      abasMelodias.style.display = 'none';
-      abasIdeias.style.display = 'none';
-      abasComposicoes.style.display = 'none';
+      abasMelodias.classList.remove('active');
+      abasIdeias.classList.remove('active');
+      abasComposicoes.classList.remove('active');
     }
 
-    function mostrarAbas(categoria) {
-      ocultarAbasTodas();
-      if (categoria === 'Melodias') abasMelodias.style.display = 'flex';
-      else if (categoria === 'Ideias') abasIdeias.style.display = 'flex';
-      else if (categoria === 'Composições') abasComposicoes.style.display = 'flex';
+    function toggleAbas(categoria) {
+      if (categoria === 'Melodias') {
+        if (abasMelodias.classList.contains('active')) {
+          abasMelodias.classList.remove('active');
+          return false;
+        } else {
+          ocultarAbasTodas();
+          abasMelodias.classList.add('active');
+          return true;
+        }
+      } else if (categoria === 'Ideias') {
+        if (abasIdeias.classList.contains('active')) {
+          abasIdeias.classList.remove('active');
+          return false;
+        } else {
+          ocultarAbasTodas();
+          abasIdeias.classList.add('active');
+          return true;
+        }
+      } else if (categoria === 'Composições') {
+        if (abasComposicoes.classList.contains('active')) {
+          abasComposicoes.classList.remove('active');
+          return false;
+        } else {
+          ocultarAbasTodas();
+          abasComposicoes.classList.add('active');
+          return true;
+        }
+      }
+      return false;
     }
 
-    // Renderiza os posts conforme filtros (apenas para "Todos")
     function renderPosts() {
       postsList.innerHTML = '';
 
       if (filtroCategoriaAtual === 'Melodias' || filtroCategoriaAtual === 'Ideias' || filtroCategoriaAtual === 'Composições') {
-        // Esconde lista de posts e mostra mensagem
         postsList.style.display = 'none';
         categoriaMsg.style.display = 'block';
         categoriaMsg.innerHTML = `Posts da categoria <strong>${filtroCategoriaAtual}</strong> estão desabilitados.<br />Você selecionou a Aba <strong>${filtroAbaAtual[filtroCategoriaAtual]}</strong>.<br />Use essa aba para seus estudos!`;
       } else {
-        // Mostra posts e esconde mensagem
         postsList.style.display = 'block';
         categoriaMsg.style.display = 'none';
 
-        // Aqui só posts da categoria 'Todos', pois só tem essa opção no select
         posts.forEach(({texto, categoria}, index) => {
           const li = document.createElement('li');
 
@@ -431,41 +443,61 @@
       }
     }
 
-    // Ativa categoria e atualiza visualizações
     function ativarCategoria(categoria) {
-      filtroCategoriaAtual = categoria;
+      if (categoria === filtroCategoriaAtual) {
+        // Se clicar na categoria ativa, e for com abas, toggle abas e botão ativo
+        if (categoria === 'Melodias' || categoria === 'Ideias' || categoria === 'Composições') {
+          const aberto = toggleAbas(categoria);
+          // Se fechar abas, desativa o botão e volta para "Todos"
+          if (!aberto) {
+            filtroCategoriaAtual = 'Todos';
+            sidebarButtons.forEach(btn => {
+              btn.classList.toggle('active', btn.dataset.categoria === 'Todos');
+            });
+          }
+          // Se abriu, deixa o botão ativo
+          else {
+            sidebarButtons.forEach(btn => {
+              btn.classList.toggle('active', btn.dataset.categoria === categoria);
+            });
+          }
+        }
+        // Se clicar na categoria ativa "Todos" não faz nada (já ativo)
+        return;
+      }
 
-      // Atualiza active sidebar buttons
+      // Se for categoria diferente da atual
+      filtroCategoriaAtual = categoria;
       sidebarButtons.forEach(btn => {
         btn.classList.toggle('active', btn.dataset.categoria === categoria);
       });
 
       // Mostrar abas só se for Melodias, Ideias ou Composições
       if (categoria === 'Melodias' || categoria === 'Ideias' || categoria === 'Composições') {
-        mostrarAbas(categoria);
+        ocultarAbasTodas();
+        if (!toggleAbas(categoria)) {
+          // Se abas estavam abertas, só ativar o toggle novamente
+          toggleAbas(categoria);
+        }
       } else {
         ocultarAbasTodas();
       }
-
       renderPosts();
     }
 
-    // Ativa aba vertical para a categoria correspondente
     function ativarAba(categoria, numero) {
       filtroAbaAtual[categoria] = numero;
 
       // Remove active de todas abas da categoria
-      document.querySelectorAll(`div#abas-${categoria.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')}-vertical .aba-numero-vertical`).forEach(btn => {
+      document.querySelectorAll(`div#abas-${categoria.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')}-vertical button`).forEach(btn => {
         btn.classList.remove('active');
       });
 
       // Ativa a aba clicada
-      document.querySelector(`div#abas-${categoria.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')}-vertical button[data-numero="${numero}"]`).classList.add('active');
+      const abaAtiva = document.querySelector(`div#abas-${categoria.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')}-vertical button[data-numero="${numero}"]`);
+      if (abaAtiva) abaAtiva.classList.add('active');
 
-      // Atualiza mensagem caso esteja na categoria ativa
-      if (filtroCategoriaAtual === categoria) {
-        categoriaMsg.innerHTML = `Posts da categoria <strong>${categoria}</strong> estão desabilitados.<br />Você selecionou a Aba <strong>${numero}</strong>.<br />Use essa aba para seus estudos!`;
-      }
+      renderPosts();
     }
 
     // Eventos sidebar categorias
