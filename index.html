@@ -58,7 +58,7 @@
     }
 
     aside.sidebar {
-      width: 260px;
+      width: 280px;
       background: #0d1b2a;
       border-radius: 10px;
       padding: 20px;
@@ -106,6 +106,8 @@
       flex-direction: column;
       gap: 10px;
       margin-top: 10px;
+      padding-left: 15px;
+      border-left: 2px solid #004080;
     }
     .abas-vertical.active {
       display: flex;
@@ -121,6 +123,7 @@
       transition: background 0.3s, color 0.3s;
       user-select: none;
       text-align: center;
+      width: 40px;
     }
     .aba-numero-vertical.active {
       background: #00aaff;
@@ -267,10 +270,13 @@
       .abas-vertical {
         flex-direction: row;
         justify-content: center;
+        padding-left: 0;
+        border-left: none;
       }
       .aba-numero-vertical {
         flex: 1;
         padding: 8px 0;
+        width: auto;
       }
     }
   </style>
@@ -288,6 +294,14 @@
     <aside class="sidebar">
       <h3>Categorias</h3>
       <button data-categoria="Todos" class="active">Todos</button>
+      <div id="abas-todos-vertical" class="abas-vertical active">
+        <button class="aba-numero-vertical active" data-numero="1" data-cat="Todos">1</button>
+        <button class="aba-numero-vertical" data-numero="2" data-cat="Todos">2</button>
+        <button class="aba-numero-vertical" data-numero="3" data-cat="Todos">3</button>
+        <button class="aba-numero-vertical" data-numero="4" data-cat="Todos">4</button>
+        <button class="aba-numero-vertical" data-numero="5" data-cat="Todos">5</button>
+      </div>
+
       <button data-categoria="Melodias">Melodias</button>
       <div id="abas-melodias-vertical" class="abas-vertical">
         <button class="aba-numero-vertical active" data-numero="1" data-cat="Melodias">1</button>
@@ -325,8 +339,8 @@
         <form id="form-post">
           <textarea id="post-text" placeholder="Escreva seu post aqui..." required></textarea>
           <select id="categoria-select" required>
-            <option value="" disabled selected>Escolha uma categoria</option>
-            <option value="Todos">Todos</option>
+            <option value="" disabled>Escolha uma categoria</option>
+            <option value="Todos" selected>Todos</option>
           </select>
           <button type="submit" id="btn-postar" class="btn">Postar</button>
         </form>
@@ -351,6 +365,7 @@
     const categoriaSelect = document.getElementById('categoria-select');
     const postsList = document.getElementById('posts');
     const sidebarButtons = document.querySelectorAll('aside.sidebar > button[data-categoria]');
+    const abasTodos = document.getElementById('abas-todos-vertical');
     const abasMelodias = document.getElementById('abas-melodias-vertical');
     const abasIdeias = document.getElementById('abas-ideias-vertical');
     const abasComposicoes = document.getElementById('abas-composicoes-vertical');
@@ -358,22 +373,41 @@
 
     const abasButtons = document.querySelectorAll('.aba-numero-vertical');
 
-    let posts = [];
+    // Estrutura para armazenar posts separados por categoria e aba
+    let posts = {
+      Todos: { '1': [], '2': [], '3': [], '4': [], '5': [] },
+      Melodias: { '1': [], '2': [], '3': [], '4': [], '5': [] },
+      Ideias: { '1': [], '2': [], '3': [], '4': [], '5': [] },
+      'Composições': { '1': [], '2': [], '3': [], '4': [], '5': [] }
+    };
+
     let filtroCategoriaAtual = 'Todos';
     let filtroAbaAtual = {
+      Todos: '1',
       Melodias: '1',
       Ideias: '1',
       'Composições': '1'
     };
 
     function ocultarAbasTodas() {
+      abasTodos.classList.remove('active');
       abasMelodias.classList.remove('active');
       abasIdeias.classList.remove('active');
       abasComposicoes.classList.remove('active');
     }
 
     function toggleAbas(categoria) {
-      if (categoria === 'Melodias') {
+      if (categoria === 'Todos') {
+        if (abasTodos.classList.contains('active')) {
+          abasTodos.classList.remove('active');
+          return false;
+        } else {
+          ocultarAbasTodas();
+          abasTodos.classList.add('active');
+          return true;
+        }
+      }
+      else if (categoria === 'Melodias') {
         if (abasMelodias.classList.contains('active')) {
           abasMelodias.classList.remove('active');
           return false;
@@ -382,7 +416,8 @@
           abasMelodias.classList.add('active');
           return true;
         }
-      } else if (categoria === 'Ideias') {
+      }
+      else if (categoria === 'Ideias') {
         if (abasIdeias.classList.contains('active')) {
           abasIdeias.classList.remove('active');
           return false;
@@ -391,7 +426,8 @@
           abasIdeias.classList.add('active');
           return true;
         }
-      } else if (categoria === 'Composições') {
+      }
+      else if (categoria === 'Composições') {
         if (abasComposicoes.classList.contains('active')) {
           abasComposicoes.classList.remove('active');
           return false;
@@ -407,96 +443,98 @@
     function renderPosts() {
       postsList.innerHTML = '';
 
-      if (filtroCategoriaAtual === 'Melodias' || filtroCategoriaAtual === 'Ideias' || filtroCategoriaAtual === 'Composições') {
+      // Se categoria diferente de Todos, desabilita posts e mostra mensagem
+      if (filtroCategoriaAtual !== 'Todos') {
         postsList.style.display = 'none';
         categoriaMsg.style.display = 'block';
         categoriaMsg.innerHTML = `Posts da categoria <strong>${filtroCategoriaAtual}</strong> estão desabilitados.<br />Você selecionou a Aba <strong>${filtroAbaAtual[filtroCategoriaAtual]}</strong>.<br />Use essa aba para seus estudos!`;
-      } else {
-        postsList.style.display = 'block';
-        categoriaMsg.style.display = 'none';
+        return;
+      }
 
-        posts.forEach(({texto, categoria}, index) => {
-          const li = document.createElement('li');
+      postsList.style.display = 'block';
+      categoriaMsg.style.display = 'none';
 
-          const categoriaSpan = document.createElement('span');
-          categoriaSpan.textContent = categoria;
-          categoriaSpan.className = 'categoria-post';
+      const listaPosts = posts[filtroCategoriaAtual][filtroAbaAtual[filtroCategoriaAtual]];
 
-          const textoSpan = document.createElement('span');
-          textoSpan.textContent = texto;
-          textoSpan.className = 'texto-post';
+      listaPosts.forEach(({texto}, index) => {
+        const li = document.createElement('li');
 
-          const btnExcluir = document.createElement('button');
-          btnExcluir.textContent = 'X';
-          btnExcluir.title = 'Excluir post';
-          btnExcluir.onclick = () => {
-            posts.splice(index, 1);
-            renderPosts();
-          };
+        const categoriaSpan = document.createElement('span');
+        categoriaSpan.textContent = filtroCategoriaAtual;
+        categoriaSpan.className = 'categoria-post';
 
-          li.appendChild(categoriaSpan);
-          li.appendChild(textoSpan);
-          li.appendChild(btnExcluir);
+        const textoSpan = document.createElement('span');
+        textoSpan.textContent = texto;
+        textoSpan.className = 'texto-post';
 
-          postsList.appendChild(li);
-        });
+        const btnExcluir = document.createElement('button');
+        btnExcluir.textContent = 'X';
+        btnExcluir.title = 'Excluir post';
+        btnExcluir.onclick = () => {
+          listaPosts.splice(index, 1);
+          renderPosts();
+        };
+
+        li.appendChild(categoriaSpan);
+        li.appendChild(textoSpan);
+        li.appendChild(btnExcluir);
+
+        postsList.appendChild(li);
+      });
+
+      if(listaPosts.length === 0){
+        const vazioLi = document.createElement('li');
+        vazioLi.textContent = 'Nenhum post nesta aba.';
+        vazioLi.style.fontStyle = 'italic';
+        vazioLi.style.color = '#888';
+        vazioLi.style.justifyContent = 'center';
+        postsList.appendChild(vazioLi);
       }
     }
 
     function ativarCategoria(categoria) {
-      if (categoria === filtroCategoriaAtual) {
-        // Se clicar na categoria ativa, e for com abas, toggle abas e botão ativo
-        if (categoria === 'Melodias' || categoria === 'Ideias' || categoria === 'Composições') {
-          const aberto = toggleAbas(categoria);
-          // Se fechar abas, desativa o botão e volta para "Todos"
-          if (!aberto) {
-            filtroCategoriaAtual = 'Todos';
-            sidebarButtons.forEach(btn => {
-              btn.classList.toggle('active', btn.dataset.categoria === 'Todos');
-            });
-          }
-          // Se abriu, deixa o botão ativo
-          else {
-            sidebarButtons.forEach(btn => {
-              btn.classList.toggle('active', btn.dataset.categoria === categoria);
-            });
-          }
+      if (filtroCategoriaAtual === categoria) {
+        // Toggle abre/fecha abas
+        if (!toggleAbas(categoria)) {
+          // Se fechou abas, remove active do botão
+          document.querySelector(`aside.sidebar > button[data-categoria="${categoria}"]`).classList.remove('active');
+        } else {
+          document.querySelector(`aside.sidebar > button[data-categoria="${categoria}"]`).classList.add('active');
         }
-        // Se clicar na categoria ativa "Todos" não faz nada (já ativo)
         return;
       }
 
-      // Se for categoria diferente da atual
-      filtroCategoriaAtual = categoria;
+      // Muda active do botão
       sidebarButtons.forEach(btn => {
         btn.classList.toggle('active', btn.dataset.categoria === categoria);
       });
 
-      // Mostrar abas só se for Melodias, Ideias ou Composições
-      if (categoria === 'Melodias' || categoria === 'Ideias' || categoria === 'Composições') {
-        ocultarAbasTodas();
-        if (!toggleAbas(categoria)) {
-          // Se abas estavam abertas, só ativar o toggle novamente
-          toggleAbas(categoria);
-        }
-      } else {
-        ocultarAbasTodas();
-      }
+      // Fecha todas as abas e abre as da categoria selecionada
+      ocultarAbasTodas();
+
+      if(categoria === 'Todos') abasTodos.classList.add('active');
+      else if(categoria === 'Melodias') abasMelodias.classList.add('active');
+      else if(categoria === 'Ideias') abasIdeias.classList.add('active');
+      else if(categoria === 'Composições') abasComposicoes.classList.add('active');
+
+      filtroCategoriaAtual = categoria;
+
       renderPosts();
     }
 
     function ativarAba(categoria, numero) {
-      filtroAbaAtual[categoria] = numero;
+      if(filtroAbaAtual[categoria] === numero) {
+        // No clique na aba atual, não faz nada
+        return;
+      }
 
-      // Remove active de todas abas da categoria
-      document.querySelectorAll(`div#abas-${categoria.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')}-vertical button`).forEach(btn => {
-        btn.classList.remove('active');
+      // Atualiza active das abas na categoria
+      const abasCategoria = document.querySelectorAll(`#abas-${categoria.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')}-vertical button`);
+      abasCategoria.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.numero === numero);
       });
 
-      // Ativa a aba clicada
-      const abaAtiva = document.querySelector(`div#abas-${categoria.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')}-vertical button[data-numero="${numero}"]`);
-      if (abaAtiva) abaAtiva.classList.add('active');
-
+      filtroAbaAtual[categoria] = numero;
       renderPosts();
     }
 
@@ -527,7 +565,7 @@
         return;
       }
 
-      posts.unshift({ texto, categoria });
+      posts['Todos'][filtroAbaAtual['Todos']].unshift({ texto, categoria });
       renderPosts();
 
       textarea.value = '';
@@ -535,8 +573,9 @@
       textarea.focus();
     });
 
-    // Inicializa
+    // Inicializa: abre Todos e aba 1 ativada
     ativarCategoria('Todos');
+    ativarAba('Todos', '1');
     ativarAba('Melodias', '1');
     ativarAba('Ideias', '1');
     ativarAba('Composições', '1');
