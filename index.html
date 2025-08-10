@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>VYYZ - Home</title>
+  <title>VYYZ - Produto com Compra</title>
   <style>
     body {
       margin: 0;
@@ -11,258 +11,109 @@
       background: linear-gradient(180deg, #0a0a0a, #001f3f);
       color: white;
     }
-
-    header {
-      background: #0d1b2a;
-      padding: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-    }
-
-    header h1 {
-      color: #00aaff;
-      margin: 0;
-      letter-spacing: 3px;
-      font-weight: 900;
-    }
-
-    nav a {
-      color: white;
-      margin: 0 15px;
-      text-decoration: none;
-      font-weight: bold;
-      transition: color 0.3s;
-    }
-
-    nav a:hover {
-      color: #00aaff;
-    }
-
-    .banner {
-      background: url('fundo.png') no-repeat center center/cover;
-      padding: 80px 20px;
-      text-align: center;
-    }
-
-    .banner h2 {
-      font-size: 2.5rem;
-      color: #00aaff;
-      text-shadow: 2px 2px 5px black;
-      letter-spacing: 1.5px;
-    }
-
-    .banner p {
-      font-size: 1.2rem;
-      color: #ccc;
-    }
-
-    .produtos {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
-      padding: 40px;
-    }
-
     .produto {
       background: #1b263b;
       padding: 20px;
       border-radius: 10px;
+      max-width: 300px;
+      margin: 40px auto;
       text-align: center;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-      transition: transform 0.3s ease;
     }
-
-    .produto:hover {
-      transform: scale(1.05);
-    }
-
     .produto img {
       max-width: 100%;
       border-radius: 10px;
     }
-
     .produto h3 {
       margin: 15px 0 10px;
       color: #00aaff;
     }
-
     .produto p {
       color: #ccc;
-      font-size: 0.9rem;
+      font-size: 1rem;
     }
-
-    .produto button {
+    button, a.button-link {
       background: #00aaff;
       border: none;
-      padding: 10px 15px;
+      padding: 10px 20px;
       color: white;
       font-size: 1rem;
       border-radius: 5px;
       cursor: pointer;
+      margin: 5px;
+      text-decoration: none;
+      display: inline-block;
       transition: background 0.3s;
     }
-
-    .produto button:hover {
+    button:hover, a.button-link:hover {
       background: #0088cc;
     }
-
-    footer {
+    #carrinho {
+      max-width: 300px;
+      margin: 20px auto;
       background: #0d1b2a;
-      text-align: center;
-      padding: 15px;
-      color: #777;
-      margin-top: 20px;
+      padding: 10px;
+      border-radius: 10px;
+      color: #00aaff;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>VYYZ</h1>
-    <nav>
-      <a href="#">Home</a>
-      <a href="#">Produtos</a>
-      <a href="#">Ofertas</a>
-      <a href="#">Contato</a>
-    </nav>
-  </header>
-
-  <section class="banner">
-    <h2>As Melhores Ofertas em Tecnologia</h2>
-    <p>Compre seus gadgets favoritos com segurança e o melhor preço</p>
-  </section>
-
-  <section class="produtos">
-    <!-- Produto 1 real -->
-    <div class="produto">
-      <img src="" alt="Microfone Behringer C-1 Condensador Cardioide dourado" />
-      <h3>Microfone Behringer C-1 Condensador Cardioide</h3>
-      <p>Microfone condensador cardioide na cor dourada. Novo | +5mil vendidos</p>
-      <button>Comprar agora</button>
-    </div>
+  <section class="produto">
+    <img src="imagens/microfone-behringer-dourado.jpg" alt="Microfone Behringer C-1 Condensador Cardioide dourado" />
+    <h3>Microfone Behringer C-1 Condensador Cardioide</h3>
+    <p>Microfone condensador cardioide na cor dourada. Novo | +5mil vendidos</p>
     
-    <!-- Produtos placeholders 2 a 20 -->
-    <div class="produto">
-      <img src="https://via.placeholder.com/220x160" alt="Produto 2" />
-      <h3>Produto 2</h3>
-      <p>Descrição do produto 2.</p>
-      <button>Comprar</button>
-    </div>
-    <div class="produto">
-      <img src="https://via.placeholder.com/220x160" alt="Produto 3" />
-      <h3>Produto 3</h3>
-      <p>Descrição do produto 3.</p>
-      <button>Comprar</button>
-    </div>
-    <div class="produto">
-      <img src="https://via.placeholder.com/220x160" alt="Produto 4" />
-      <h3>Produto 4</h3>
-      <p>Descrição do produto 4.</p>
-      <button>Comprar</button>
-    </div>
-    <div class="produto">
-      <img src="https://via.placeholder.com/220x160" alt="Produto 5" />
-      <h3>Produto 5</h3>
-      <p>Descrição do produto 5.</p>
-      <button>Comprar</button>
-    </div>
-    <div class="produto">
-      <img src="https://via.placeholder.com/220x160" alt="Produto 6" />
-      <h3>Produto 6</h3>
-      <p>Descrição do produto 6.</p>
-      <button>Comprar</button>
-    </div>
-    <div class="produto">
-      <img src="https://via.placeholder.com/220x160" alt="Produto 7" />
-      <h3>Produto 7</h3>
-      <p>Descrição do produto 7.</p>
-      <button>Comprar</button>
-    </div>
-    <div class="produto">
-      <img src="https://via.placeholder.com/220x160" alt="Produto 8" />
-      <h3>Produto 8</h3>
-      <p>Descrição do produto 8.</p>
-      <button>Comprar</button>
-    </div>
-    <div class="produto">
-      <img src="https://via.placeholder.com/220x160" alt="Produto 9" />
-      <h3>Produto 9</h3>
-      <p>Descrição do produto 9.</p>
-      <button>Comprar</button>
-    </div>
-    <div class="produto">
-      <img src="https://via.placeholder.com/220x160" alt="Produto 10" />
-      <h3>Produto 10</h3>
-      <p>Descrição do produto 10.</p>
-      <button>Comprar</button>
-    </div>
-    <div class="produto">
-      <img src="https://via.placeholder.com/220x160" alt="Produto 11" />
-      <h3>Produto 11</h3>
-      <p>Descrição do produto 11.</p>
-      <button>Comprar</button>
-    </div>
-    <div class="produto">
-      <img src="https://via.placeholder.com/220x160" alt="Produto 12" />
-      <h3>Produto 12</h3>
-      <p>Descrição do produto 12.</p>
-      <button>Comprar</button>
-    </div>
-    <div class="produto">
-      <img src="https://via.placeholder.com/220x160" alt="Produto 13" />
-      <h3>Produto 13</h3>
-      <p>Descrição do produto 13.</p>
-      <button>Comprar</button>
-    </div>
-    <div class="produto">
-      <img src="https://via.placeholder.com/220x160" alt="Produto 14" />
-      <h3>Produto 14</h3>
-      <p>Descrição do produto 14.</p>
-      <button>Comprar</button>
-    </div>
-    <div class="produto">
-      <img src="https://via.placeholder.com/220x160" alt="Produto 15" />
-      <h3>Produto 15</h3>
-      <p>Descrição do produto 15.</p>
-      <button>Comprar</button>
-    </div>
-    <div class="produto">
-      <img src="https://via.placeholder.com/220x160" alt="Produto 16" />
-      <h3>Produto 16</h3>
-      <p>Descrição do produto 16.</p>
-      <button>Comprar</button>
-    </div>
-    <div class="produto">
-      <img src="https://via.placeholder.com/220x160" alt="Produto 17" />
-      <h3>Produto 17</h3>
-      <p>Descrição do produto 17.</p>
-      <button>Comprar</button>
-    </div>
-    <div class="produto">
-      <img src="https://via.placeholder.com/220x160" alt="Produto 18" />
-      <h3>Produto 18</h3>
-      <p>Descrição do produto 18.</p>
-      <button>Comprar</button>
-    </div>
-    <div class="produto">
-      <img src="https://via.placeholder.com/220x160" alt="Produto 19" />
-      <h3>Produto 19</h3>
-      <p>Descrição do produto 19.</p>
-      <button>Comprar</button>
-    </div>
-    <div class="produto">
-      <img src="https://via.placeholder.com/220x160" alt="Produto 20" />
-      <h3>Produto 20</h3>
-      <p>Descrição do produto 20.</p>
-      <button>Comprar</button>
-    </div>
+    <!-- Botão link externo -->
+    <a href="https://www.amazon.com.br/dp/B001J4N1BK" target="_blank" rel="noopener noreferrer" class="button-link">
+      Comprar no Amazon
+    </a>
+
+    <!-- Botão adicionar ao carrinho -->
+    <button onclick="adicionarAoCarrinho()">
+      Adicionar ao carrinho
+    </button>
+
+    <!-- Formulário PayPal -->
+    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank" style="margin-top:10px;">
+      <input type="hidden" name="cmd" value="_xclick" />
+      <input type="hidden" name="business" value="seu-email-paypal@example.com" />
+      <input type="hidden" name="item_name" value="Microfone Behringer C-1 Condensador Cardioide" />
+      <input type="hidden" name="amount" value="199.99" />
+      <input type="hidden" name="currency_code" value="BRL" />
+      <button type="submit">Pagar com PayPal</button>
+    </form>
   </section>
 
-  <footer>
-    © 2025 VYYZ - Todos os direitos reservados
-  </footer>
+  <!-- Carrinho -->
+  <section id="carrinho">
+    <h4>Carrinho</h4>
+    <ul id="lista-carrinho"></ul>
+  </section>
+
+  <script>
+    const carrinho = [];
+
+    function adicionarAoCarrinho() {
+      const produto = {
+        nome: "Microfone Behringer C-1 Condensador Cardioide",
+        preco: 199.99
+      };
+      carrinho.push(produto);
+      atualizarCarrinho();
+    }
+
+    function atualizarCarrinho() {
+      const lista = document.getElementById('lista-carrinho');
+      lista.innerHTML = '';
+      carrinho.forEach((item, index) => {
+        const li = document.createElement('li');
+        li.textContent = `${item.nome} - R$ ${item.preco.toFixed(2)}`;
+        lista.appendChild(li);
+      });
+    }
+  </script>
 
 </body>
 </html>
