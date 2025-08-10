@@ -108,6 +108,23 @@
       border-radius: 8px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.3);
       white-space: pre-wrap; /* respeita quebras de linha */
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    #posts li button {
+      background: #cc0000;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      padding: 5px 10px;
+      font-weight: bold;
+      font-size: 1rem;
+      transition: background 0.3s;
+    }
+    #posts li button:hover {
+      background: #aa0000;
     }
   </style>
 </head>
@@ -156,8 +173,22 @@
       if (texto === '') return;
 
       const li = document.createElement('li');
-      li.textContent = texto;
-      postsList.prepend(li); // adiciona no topo da lista
+
+      // Texto do post em um span para separar do botão
+      const span = document.createElement('span');
+      span.textContent = texto;
+      span.style.flex = '1'; // para ocupar o máximo de espaço
+      li.appendChild(span);
+
+      // Botão excluir
+      const btnExcluir = document.createElement('button');
+      btnExcluir.textContent = 'X';
+      btnExcluir.title = 'Excluir post';
+      btnExcluir.onclick = () => li.remove();
+
+      li.appendChild(btnExcluir);
+
+      postsList.prepend(li);
 
       textarea.value = '';
       textarea.focus();
