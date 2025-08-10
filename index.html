@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesquisa Profissional</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(180deg, #001f3f, #000814);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #00aaff;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            padding: 10px 20px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 4px 15px rgba(0, 170, 255, 0.4);
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            outline: none;
+            background: transparent;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .search-box button {
+            background: #00aaff;
+            border: none;
+            padding: 10px 20px;
+            color: white;
+            font-size: 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .search-box button:hover {
+            background: #0088cc;
+        }
+
+        footer {
+            position: absolute;
+            bottom: 20px;
+            font-size: 0.9rem;
+            color: #00aaff;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Pesquisa Profissional</h1>
+
+    <div class="search-box">
+        <input type="text" placeholder="Digite sua pesquisa..." id="searchInput">
+        <button onclick="pesquisar()">🔍 Pesquisar</button>
+    </div>
+
+    <footer>© 2025 Pesquisa Pro - Todos os direitos reservados</footer>
+
+    <script>
+        function pesquisar() {
+            let query = document.getElementById('searchInput').value;
+            if (query.trim() !== "") {
+                window.location.href = "https://www.google.com/search?q=" + encodeURIComponent(query);
+            }
+        }
+    </script>
+
+</body>
+</html>
