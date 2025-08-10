@@ -3,27 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>VYYZ - Loja de Tecnologia</title>
+  <title>Mentex - Estudos Musicais</title>
   <style>
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(180deg, #0a0a0a, #001f3f);
       color: white;
+      scroll-behavior: smooth;
     }
     header {
       background: #0d1b2a;
-      padding: 20px;
+      padding: 20px 40px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.7);
     }
     header h1 {
       color: #00aaff;
       margin: 0;
       letter-spacing: 3px;
       font-weight: 900;
+      cursor: default;
     }
     nav a {
       color: white;
@@ -31,244 +36,70 @@
       text-decoration: none;
       font-weight: bold;
       transition: color 0.3s;
+      cursor: pointer;
     }
     nav a:hover {
       color: #00aaff;
     }
-    .banner {
-      background: url('fundo.png') no-repeat center center/cover;
-      padding: 80px 20px;
-      text-align: center;
+    main {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px;
     }
-    .banner h2 {
+    section {
+      margin-bottom: 80px;
+    }
+    h2 {
       font-size: 2.5rem;
       color: #00aaff;
       text-shadow: 2px 2px 5px black;
       letter-spacing: 1.5px;
+      margin-bottom: 15px;
     }
-    .banner p {
+    p {
       font-size: 1.2rem;
       color: #ccc;
-    }
-    .produtos {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
-      padding: 40px;
-    }
-    .produto {
-      background: #1b263b;
-      padding: 20px;
-      border-radius: 10px;
-      text-align: center;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-      transition: transform 0.3s ease;
-    }
-    .produto:hover {
-      transform: scale(1.05);
-    }
-    .produto img {
-      max-width: 100%;
-      border-radius: 10px;
-    }
-    .produto h3 {
-      margin: 15px 0 10px;
-      color: #00aaff;
-    }
-    .produto p {
-      color: #ccc;
-      font-size: 0.9rem;
-      min-height: 80px;
-    }
-    .avaliacao {
-      margin-top: 5px;
-      font-size: 0.9rem;
-      color: #00cc00;
+      line-height: 1.6;
+      margin-bottom: 20px;
     }
     .btn {
       background: #00aaff;
       border: none;
-      padding: 10px 15px;
+      padding: 12px 20px;
       color: white;
-      font-size: 1rem;
-      border-radius: 5px;
+      font-size: 1.1rem;
+      border-radius: 6px;
       cursor: pointer;
       transition: background 0.3s;
-      margin: 5px 5px 0 5px;
-      width: 130px;
+      text-decoration: none;
+      display: inline-block;
     }
     .btn:hover {
       background: #0088cc;
-    }
-    #carrinho {
-      max-width: 900px;
-      margin: 20px auto;
-      background: #0d1b2a;
-      padding: 20px;
-      border-radius: 10px;
-      color: #00aaff;
-    }
-    #carrinho h4 {
-      margin-top: 0;
-    }
-    #lista-carrinho {
-      list-style: none;
-      padding-left: 0;
-      max-height: 200px;
-      overflow-y: auto;
-      margin-bottom: 15px;
-    }
-    #lista-carrinho li {
-      padding: 8px;
-      border-bottom: 1px solid #004080;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    #lista-carrinho li button {
-      background: #cc0000;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 0.8rem;
-      transition: background 0.3s;
-    }
-    #lista-carrinho li button:hover {
-      background: #aa0000;
-    }
-    #finalizar {
-      background: #009900;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 1.1rem;
-      color: white;
-      transition: background 0.3s;
-    }
-    #finalizar:hover {
-      background: #007700;
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>VYYZ</h1>
+    <h1>Mentex</h1>
     <nav>
-      <a href="#">Home</a>
-      <a href="#">Produtos</a>
-      <a href="#">Ofertas</a>
-      <a href="#">Contato</a>
-      <a href="https://zyy077.github.io/mentex/" target="_blank" rel="noopener noreferrer">Mentex (Estudos Musicais)</a>
+      <a href="#inicio">Início</a>
+      <a href="#sobre">Sobre</a>
+      <a href="https://zyy077.github.io/vyyz/" target="_blank" rel="noopener noreferrer">VYYZ</a>
     </nav>
   </header>
-  <section class="banner">
-    <h2>As Melhores Ofertas em Tecnologia</h2>
-    <p>Compre seus gadgets favoritos com segurança e o melhor preço</p>
-  </section>
-  <section class="produtos">
-    <!-- Produto 1 -->
-    <div class="produto">
-      <img src="imagens/microfone-behringer-dourado.jpg" alt="Microfone Behringer C-1 Condensador Cardioide dourado" />
-      <h3>Microfone Behringer C-1 Condensador Cardioide</h3>
-      <p>Microfone condensador cardioide na cor dourada. Novo | +5mil vendidos<br><strong>R$ 669,90</strong></p>
-      <button class="btn" onclick="alert('Comprar agora ainda não está ativo!')">Comprar agora</button>
-      <button class="btn" onclick="adicionarAoCarrinho('Microfone Behringer C-1 Condensador Cardioide', 669.90)">Adicionar ao carrinho</button>
-    </div>
-    <!-- Produto 2 -->
-    <div class="produto">
-      <img src="https://via.placeholder.com/220x160" alt="Kit Profissional Microfone Condensador BM800 Podcast Gravação" />
-      <h3>Kit Profissional Microfone Condensador BM800</h3>
-      <p>Microfone BM800 para Podcast e Gravação, cor preto dourado.<br><strong>R$ 139,90</strong></p>
-      <button class="btn" onclick="alert('Comprar agora ainda não está ativo!')">Comprar agora</button>
-      <button class="btn" onclick="adicionarAoCarrinho('Kit Profissional Microfone Condensador BM800 Podcast Gravação', 139.90)">Adicionar ao carrinho</button>
-    </div>
-    <!-- Produto 3 -->
-    <div class="produto">
-      <img src="https://via.placeholder.com/220x160" alt="Kit Interface Mesa Microfone Coibeu RM800 RGB" />
-      <h3>Kit Interface Mesa Microfone Coibeu RM800 RGB</h3>
-      <p>Kit com interface, mesa e microfone RM800 com iluminação RGB.<br><strong>R$ 199,90</strong></p>
-      <button class="btn" onclick="alert('Comprar agora ainda não está ativo!')">Comprar agora</button>
-      <button class="btn" onclick="adicionarAoCarrinho('Kit Interface Mesa Microfone Coibeu RM800 RGB', 199.90)">Adicionar ao carrinho</button>
-    </div>
-    <!-- Produto 4 -->
-    <div class="produto">
-      <img src="https://via.placeholder.com/220x160" alt="Mesa de Som Yamaha MG12 Analógica 12 Canais Bivolt Preta" />
-      <h3>Mesa de Som Yamaha MG12 Analógica 12 Canais Bivolt</h3>
-      <p>Mesa de som analógica, 12 canais, bivolt, cor preta.<br><strong>R$ 1.979,90</strong></p>
-      <button class="btn" onclick="alert('Comprar agora ainda não está ativo!')">Comprar agora</button>
-      <button class="btn" onclick="adicionarAoCarrinho('Mesa de Som Yamaha MG12 Analógica 12 Canais Bivolt', 1979.90)">Adicionar ao carrinho</button>
-    </div>
-    <!-- Produto 5 -->
-    <div class="produto">
-      <img src="https://via.placeholder.com/220x160" alt="Monitor Adam D3v Active Desktop White" />
-      <h3>Monitor Adam D3v Active Desktop White</h3>
-      <p>Novo monitor Adam D3v Active Desktop White.<br><strong>R$ 4.299,00</strong></p>
-      <button class="btn" onclick="alert('Comprar agora ainda não está ativo!')">Comprar agora</button>
-      <button class="btn" onclick="adicionarAoCarrinho('Monitor Adam D3v Active Desktop White', 4299.00)">Adicionar ao carrinho</button>
-    </div>
-    <!-- Produto 6 -->
-    <div class="produto">
-      <img src="https://via.placeholder.com/220x160" alt="Microfone Base Mesa Estéreo USB Omnidirecional Flexível Preto" />
-      <h3>Microfone Base Mesa Estéreo USB Omnidirecional Flexível Preto</h3>
-      <p>Novo | +500 vendidos<br>Avaliação: 4.4 de 5 (51 opiniões)<br><strong>R$ 89,90</strong></p>
-      <button class="btn" onclick="alert('Comprar agora ainda não está ativo!')">Comprar agora</button>
-      <button class="btn" onclick="adicionarAoCarrinho('Microfone Base Mesa Estéreo USB Omnidirecional Flexível Preto', 89.90)">Adicionar ao carrinho</button>
-    </div>
-    <!-- Produto 7 -->
-    <div class="produto">
-      <img src="https://via.placeholder.com/220x160" alt="Monitor de estúdio Adam Audio T5V 132W preto" />
-      <h3>Monitor de estúdio Adam Audio T5V 132W preto</h3>
-      <p>Novo | +100 vendidos<br>
-      Avaliação: 5.0 de 5 (17 opiniões)<br><strong>R$ 2.579,90</strong></p>
-      <button class="btn" onclick="alert('Comprar agora ainda não está ativo!')">Comprar agora</button>
-      <button class="btn" onclick="adicionarAoCarrinho('Monitor de estúdio Adam Audio T5V 132W preto', 2579.90)">Adicionar ao carrinho</button>
-    </div>
-    <!-- Produto 8 -->
-    <div class="produto">
-      <img src="https://via.placeholder.com/220x160" alt="Suporte Para Instrumentos Chão Guitarra Violão Baixo Ask G3s Preto" />
-      <h3>Suporte Para Instrumentos Chão Guitarra Violão Baixo Ask G3s Cor Preto</h3>
-      <p>Novo | +10mil vendidos<br><strong>R$ 79,99</strong></p>
-      <button class="btn" onclick="alert('Comprar agora ainda não está ativo!')">Comprar agora</button>
-      <button class="btn" onclick="adicionarAoCarrinho('Suporte Para Instrumentos Chão Guitarra Violão Baixo Ask G3s Cor Preto', 79.99)">Adicionar ao carrinho</button>
-    </div>
-  </section>
-  <section id="carrinho">
-    <h4>Carrinho de Compras</h4>
-    <ul id="lista-carrinho"></ul>
-    <button id="finalizar" onclick="finalizarCompra()">Finalizar Compra</button>
-  </section>
-  <script>
-    const carrinho = [];
-    function adicionarAoCarrinho(nome, preco) {
-      carrinho.push({ nome, preco });
-      atualizarCarrinho();
-    }
-    function atualizarCarrinho() {
-      const lista = document.getElementById('lista-carrinho');
-      lista.innerHTML = '';
-      carrinho.forEach((item, index) => {
-        const li = document.createElement('li');
-        li.textContent = `${item.nome} - R$ ${item.preco.toFixed(2)}`;
-        const btnRemover = document.createElement('button');
-        btnRemover.textContent = 'X';
-        btnRemover.onclick = () => {
-          carrinho.splice(index, 1);
-          atualizarCarrinho();
-        };
-        li.appendChild(btnRemover);
-        lista.appendChild(li);
-      });
-    }
-    function finalizarCompra() {
-      if (carrinho.length === 0) {
-        alert('Seu carrinho está vazio!');
-        return;
-      }
-      alert('Funcionalidade de finalização de compra ainda não implementada.');
-    }
-  </script>
+  <main>
+    <section id="inicio">
+      <h2>Bem-vindo ao Mentex</h2>
+      <p>Este é o seu site para estudos musicais, com dicas e definições para instrumentos e termos musicais.</p>
+      <p>Explore nosso conteúdo e aproveite para conhecer também o site VYYZ, nosso parceiro de tecnologia.</p>
+    </section>
+    <section id="sobre">
+      <h2>Sobre o Mentex</h2>
+      <p>O Mentex é uma plataforma dedicada ao estudo e à prática musical, oferecendo recursos para músicos de todos os níveis.</p>
+      <p>Nosso objetivo é facilitar o aprendizado e tornar o conhecimento musical acessível e divertido.</p>
+      <a href="https://zyy077.github.io/vyyz/" target="_blank" rel="noopener noreferrer" class="btn">Visitar VYYZ</a>
+    </section>
+  </main>
 </body>
 </html>
