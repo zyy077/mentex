@@ -11,6 +11,9 @@
       background: linear-gradient(180deg, #0a0a0a, #001f3f);
       color: white;
       scroll-behavior: smooth;
+      display: flex;
+      min-height: 100vh;
+      flex-direction: column;
     }
     header {
       background: #0d1b2a;
@@ -22,6 +25,7 @@
       top: 0;
       z-index: 1000;
       box-shadow: 0 2px 8px rgba(0,0,0,0.7);
+      flex-shrink: 0;
     }
     header h1 {
       color: #00aaff;
@@ -41,13 +45,68 @@
     nav a:hover {
       color: #00aaff;
     }
-    main {
-      max-width: 900px;
+
+    /* Layout principal: sidebar + main */
+    .container {
+      flex: 1;
+      display: flex;
+      max-width: 1200px;
       margin: 40px auto;
       padding: 0 20px;
+      gap: 30px;
+      box-sizing: border-box;
+      width: 100%;
+    }
+
+    /* Sidebar */
+    aside.sidebar {
+      width: 220px;
+      background: #0d1b2a;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      position: sticky;
+      top: 100px;
+      height: fit-content;
+    }
+    aside.sidebar h3 {
+      color: #00aaff;
+      margin-bottom: 15px;
+      font-size: 1.4rem;
+      text-align: center;
+      letter-spacing: 1.5px;
+      border-bottom: 1px solid #004080;
+      padding-bottom: 8px;
+    }
+    aside.sidebar button {
+      background: transparent;
+      border: 2px solid #00aaff;
+      color: white;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s;
+      text-align: center;
+    }
+    aside.sidebar button:hover,
+    aside.sidebar button.active {
+      background: #00aaff;
+      color: #001f3f;
+      border-color: #0088cc;
+    }
+
+    /* Main conteúdo */
+    main {
+      flex: 1;
+      max-width: 100%;
     }
     section {
-      margin-bottom: 80px;
+      margin-bottom: 40px;
     }
     h2 {
       font-size: 2.5rem;
@@ -111,20 +170,6 @@
       margin-top: 10px;
     }
     /* Lista de posts */
-    #filtro-categorias {
-      margin-bottom: 20px;
-      font-size: 1rem;
-      padding: 8px;
-      border-radius: 6px;
-      border: none;
-      outline: none;
-      background: #1b263b;
-      color: white;
-      width: 100%;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', sans-serif;
-      cursor: pointer;
-    }
     #posts {
       list-style: none;
       padding-left: 0;
@@ -164,6 +209,28 @@
     #posts li button:hover {
       background: #aa0000;
     }
+    /* Responsivo */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        margin: 20px;
+        gap: 20px;
+      }
+      aside.sidebar {
+        position: relative;
+        top: auto;
+        width: 100%;
+        flex-direction: row;
+        justify-content: center;
+        gap: 10px;
+        padding: 10px 0;
+      }
+      aside.sidebar button {
+        flex: 1;
+        font-size: 1rem;
+        padding: 8px 5px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -175,55 +242,58 @@
       <a href="https://zyy077.github.io/vyyz/" target="_blank" rel="noopener noreferrer">VYYZ</a>
     </nav>
   </header>
-  <main>
-    <section id="inicio">
-      <h2>Bem-vindo ao Mentex</h2>
-      <p>Este é o seu site para estudos musicais, com dicas e definições para instrumentos e termos musicais.</p>
-      <p>Explore nosso conteúdo e aproveite para conhecer também o site VYYZ, nosso parceiro de tecnologia.</p>
+  <div class="container">
+    <aside class="sidebar">
+      <h3>Categorias</h3>
+      <button data-categoria="Todos" class="active">Todos</button>
+      <button data-categoria="Melodias">Melodias</button>
+      <button data-categoria="Ideias">Ideias</button>
+      <button data-categoria="Composições">Composições</button>
+    </aside>
 
-      <form id="form-post">
-        <textarea id="post-text" placeholder="Escreva seu post aqui..." required></textarea>
-        <select id="categoria-select" required>
-          <option value="" disabled selected>Escolha uma categoria</option>
-          <option value="Melodias">Melodias</option>
-          <option value="Ideias">Ideias</option>
-          <option value="Composições">Composições</option>
-        </select>
-        <button type="submit" id="btn-postar" class="btn">Postar</button>
-      </form>
+    <main>
+      <section id="inicio">
+        <h2>Bem-vindo ao Mentex</h2>
+        <p>Este é o seu site para estudos musicais, com dicas e definições para instrumentos e termos musicais.</p>
+        <p>Explore nosso conteúdo e aproveite para conhecer também o site VYYZ, nosso parceiro de tecnologia.</p>
 
-      <select id="filtro-categorias" title="Filtrar posts por categoria">
-        <option value="Todos" selected>Mostrar todos</option>
-        <option value="Melodias">Melodias</option>
-        <option value="Ideias">Ideias</option>
-        <option value="Composições">Composições</option>
-      </select>
+        <form id="form-post">
+          <textarea id="post-text" placeholder="Escreva seu post aqui..." required></textarea>
+          <select id="categoria-select" required>
+            <option value="" disabled selected>Escolha uma categoria</option>
+            <option value="Melodias">Melodias</option>
+            <option value="Ideias">Ideias</option>
+            <option value="Composições">Composições</option>
+          </select>
+          <button type="submit" id="btn-postar" class="btn">Postar</button>
+        </form>
 
-      <ul id="posts">
-        <!-- Posts aparecem aqui -->
-      </ul>
-    </section>
+        <ul id="posts">
+          <!-- Posts aparecem aqui -->
+        </ul>
+      </section>
 
-    <section id="sobre">
-      <h2>Sobre o Mentex</h2>
-      <p>O Mentex é uma plataforma dedicada ao estudo e à prática musical, oferecendo recursos para músicos de todos os níveis.</p>
-      <p>Nosso objetivo é facilitar o aprendizado e tornar o conhecimento musical acessível e divertido.</p>
-      <a href="https://zyy077.github.io/vyyz/" target="_blank" rel="noopener noreferrer" class="btn">Visitar VYYZ</a>
-    </section>
-  </main>
+      <section id="sobre">
+        <h2>Sobre o Mentex</h2>
+        <p>O Mentex é uma plataforma dedicada ao estudo e à prática musical, oferecendo recursos para músicos de todos os níveis.</p>
+        <p>Nosso objetivo é facilitar o aprendizado e tornar o conhecimento musical acessível e divertido.</p>
+        <a href="https://zyy077.github.io/vyyz/" target="_blank" rel="noopener noreferrer" class="btn">Visitar VYYZ</a>
+      </section>
+    </main>
+  </div>
 
   <script>
     const form = document.getElementById('form-post');
     const textarea = document.getElementById('post-text');
     const categoriaSelect = document.getElementById('categoria-select');
     const postsList = document.getElementById('posts');
-    const filtroCategorias = document.getElementById('filtro-categorias');
+    const sidebarButtons = document.querySelectorAll('aside.sidebar button');
 
     let posts = [];
 
-    function renderPosts(filter = 'Todos') {
+    function renderPosts(filtro = 'Todos') {
       postsList.innerHTML = '';
-      const filteredPosts = filter === 'Todos' ? posts : posts.filter(p => p.categoria === filter);
+      const filteredPosts = filtro === 'Todos' ? posts : posts.filter(p => p.categoria === filtro);
       filteredPosts.forEach(({texto, categoria}, index) => {
         const li = document.createElement('li');
 
@@ -239,8 +309,8 @@
         btnExcluir.textContent = 'X';
         btnExcluir.title = 'Excluir post';
         btnExcluir.onclick = () => {
-          posts.splice(index, 1);
-          renderPosts(filtroCategorias.value);
+          posts.splice(posts.indexOf(filteredPosts[index]), 1);
+          renderPosts(filtro);
         };
 
         li.appendChild(categoriaSpan);
@@ -259,15 +329,24 @@
       if (!texto || !categoria) return;
 
       posts.unshift({ texto, categoria }); // adiciona no começo
-      renderPosts(filtroCategorias.value);
+      renderPosts(getCurrentFilter());
 
       textarea.value = '';
       categoriaSelect.selectedIndex = 0;
       textarea.focus();
     });
 
-    filtroCategorias.addEventListener('change', () => {
-      renderPosts(filtroCategorias.value);
+    function getCurrentFilter() {
+      const activeBtn = document.querySelector('aside.sidebar button.active');
+      return activeBtn ? activeBtn.dataset.categoria : 'Todos';
+    }
+
+    sidebarButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        sidebarButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+        renderPosts(button.dataset.categoria);
+      });
     });
 
     // inicializa lista vazia
