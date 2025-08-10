@@ -100,6 +100,31 @@
       border-color: #0088cc;
     }
 
+    /* Abas numeradas vertical para Melodias */
+    .abas-melodias-vertical {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .aba-numero-vertical {
+      background: transparent;
+      border: 2px solid #00aaff;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s;
+      user-select: none;
+      text-align: center;
+    }
+    .aba-numero-vertical.active {
+      background: #00aaff;
+      color: #001f3f;
+      border-color: #0088cc;
+    }
+
     /* Main conteúdo */
     main {
       flex: 1;
@@ -152,8 +177,7 @@
       box-sizing: border-box;
       font-family: 'Segoe UI', sans-serif;
     }
-    #categoria-select,
-    #subcategoria-select {
+    #categoria-select {
       margin-top: 10px;
       font-size: 1rem;
       padding: 8px;
@@ -166,9 +190,6 @@
       box-sizing: border-box;
       font-family: 'Segoe UI', sans-serif;
       cursor: pointer;
-    }
-    #subcategoria-select {
-      display: none;
     }
     #btn-postar {
       margin-top: 10px;
@@ -213,28 +234,16 @@
     #posts li button:hover {
       background: #aa0000;
     }
-    /* Abas numeradas para melodias */
-    .abas-melodias {
-      margin-bottom: 20px;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .aba-numero {
-      background: transparent;
-      border: 2px solid #00aaff;
-      color: white;
-      padding: 8px 14px;
-      border-radius: 6px;
-      font-size: 1.1rem;
-      cursor: pointer;
-      transition: background 0.3s, color 0.3s;
+    /* Mensagem de melodia desabilitada */
+    #melodia-msg {
+      font-style: italic;
+      color: #888;
+      padding: 20px;
+      background: #122a4a;
+      border-radius: 8px;
+      margin-top: 20px;
+      text-align: center;
       user-select: none;
-    }
-    .aba-numero.active {
-      background: #00aaff;
-      color: #001f3f;
-      border-color: #0088cc;
     }
 
     /* Responsivo */
@@ -258,8 +267,13 @@
         font-size: 1rem;
         padding: 8px 5px;
       }
-      .abas-melodias {
+      .abas-melodias-vertical {
+        flex-direction: row;
         justify-content: center;
+      }
+      .aba-numero-vertical {
+        flex: 1;
+        padding: 8px 0;
       }
     }
   </style>
@@ -280,6 +294,15 @@
       <button data-categoria="Melodias">Melodias</button>
       <button data-categoria="Ideias">Ideias</button>
       <button data-categoria="Composições">Composições</button>
+
+      <!-- Abas verticais para Melodias -->
+      <div id="abas-melodias-vertical" class="abas-melodias-vertical" style="display:none;">
+        <button class="aba-numero-vertical active" data-numero="1">1</button>
+        <button class="aba-numero-vertical" data-numero="2">2</button>
+        <button class="aba-numero-vertical" data-numero="3">3</button>
+        <button class="aba-numero-vertical" data-numero="4">4</button>
+        <button class="aba-numero-vertical" data-numero="5">5</button>
+      </div>
     </aside>
 
     <main>
@@ -296,29 +319,18 @@
             <option value="Ideias">Ideias</option>
             <option value="Composições">Composições</option>
           </select>
-          <select id="subcategoria-select" >
-            <option value="" disabled selected>Escolha a aba (1 a 5)</option>
-            <option value="1">Aba 1</option>
-            <option value="2">Aba 2</option>
-            <option value="3">Aba 3</option>
-            <option value="4">Aba 4</option>
-            <option value="5">Aba 5</option>
-          </select>
           <button type="submit" id="btn-postar" class="btn">Postar</button>
         </form>
-
-        <!-- Abas só aparecem na categoria Melodias -->
-        <div id="abas-melodias" class="abas-melodias" style="display:none;">
-          <button class="aba-numero active" data-numero="1">1</button>
-          <button class="aba-numero" data-numero="2">2</button>
-          <button class="aba-numero" data-numero="3">3</button>
-          <button class="aba-numero" data-numero="4">4</button>
-          <button class="aba-numero" data-numero="5">5</button>
-        </div>
 
         <ul id="posts">
           <!-- Posts aparecem aqui -->
         </ul>
+
+        <!-- Mensagem que aparece só na categoria Melodias -->
+        <div id="melodia-msg" style="display:none;">
+          Posts da categoria Melodias estão desabilitados.<br />
+          Selecione uma aba à esquerda (1 a 5).
+        </div>
       </section>
 
       <section id="sobre">
@@ -334,117 +346,93 @@
     const form = document.getElementById('form-post');
     const textarea = document.getElementById('post-text');
     const categoriaSelect = document.getElementById('categoria-select');
-    const subcategoriaSelect = document.getElementById('subcategoria-select');
     const postsList = document.getElementById('posts');
-    const sidebarButtons = document.querySelectorAll('aside.sidebar button');
-    const abasMelodias = document.getElementById('abas-melodias');
-    const abasButtons = document.querySelectorAll('.aba-numero');
+    const sidebarButtons = document.querySelectorAll('aside.sidebar > button[data-categoria]');
+    const abasMelodiasVertical = document.getElementById('abas-melodias-vertical');
+    const abasButtons = document.querySelectorAll('.aba-numero-vertical');
+    const melodiaMsg = document.getElementById('melodia-msg');
 
     let posts = [];
     let filtroCategoriaAtual = 'Todos';
-    let filtroAbaMelodias = '1'; // aba 1 selecionada por padrão
+    let filtroAbaMelodias = '1';
 
-    // Exibir ou ocultar seletor de subcategoria no formulário conforme categoria escolhida
-    categoriaSelect.addEventListener('change', () => {
-      if (categoriaSelect.value === 'Melodias') {
-        subcategoriaSelect.style.display = 'block';
-        subcategoriaSelect.required = true;
-      } else {
-        subcategoriaSelect.style.display = 'none';
-        subcategoriaSelect.value = '';
-        subcategoriaSelect.required = false;
-      }
-    });
-
-    // Renderiza os posts conforme filtros
+    // Renderiza os posts conforme filtros (exceto Melodias)
     function renderPosts() {
       postsList.innerHTML = '';
 
-      let filtered = [];
       if (filtroCategoriaAtual === 'Melodias') {
-        // filtrar posts categoria Melodias e aba igual filtroAbaMelodias
-        filtered = posts.filter(p => p.categoria === 'Melodias' && p.subcategoria === filtroAbaMelodias);
-      } else if (filtroCategoriaAtual === 'Todos') {
-        filtered = posts;
+        // Esconde lista de posts e mostra mensagem
+        postsList.style.display = 'none';
+        melodiaMsg.style.display = 'block';
       } else {
-        filtered = posts.filter(p => p.categoria === filtroCategoriaAtual);
+        // Mostra posts e esconde mensagem
+        postsList.style.display = 'block';
+        melodiaMsg.style.display = 'none';
+
+        let filtered = [];
+        if (filtroCategoriaAtual === 'Todos') {
+          filtered = posts;
+        } else {
+          filtered = posts.filter(p => p.categoria === filtroCategoriaAtual);
+        }
+
+        filtered.forEach(({texto, categoria}, index) => {
+          const li = document.createElement('li');
+
+          const categoriaSpan = document.createElement('span');
+          categoriaSpan.textContent = categoria;
+          categoriaSpan.className = 'categoria-post';
+
+          const textoSpan = document.createElement('span');
+          textoSpan.textContent = texto;
+          textoSpan.className = 'texto-post';
+
+          const btnExcluir = document.createElement('button');
+          btnExcluir.textContent = 'X';
+          btnExcluir.title = 'Excluir post';
+          btnExcluir.onclick = () => {
+            posts.splice(posts.indexOf(filtered[index]), 1);
+            renderPosts();
+          };
+
+          li.appendChild(categoriaSpan);
+          li.appendChild(textoSpan);
+          li.appendChild(btnExcluir);
+
+          postsList.appendChild(li);
+        });
       }
-
-      filtered.forEach(({texto, categoria, subcategoria}, index) => {
-        const li = document.createElement('li');
-
-        const categoriaSpan = document.createElement('span');
-        categoriaSpan.textContent = categoria === 'Melodias' ? `${categoria} ${subcategoria}` : categoria;
-        categoriaSpan.className = 'categoria-post';
-
-        const textoSpan = document.createElement('span');
-        textoSpan.textContent = texto;
-        textoSpan.className = 'texto-post';
-
-        const btnExcluir = document.createElement('button');
-        btnExcluir.textContent = 'X';
-        btnExcluir.title = 'Excluir post';
-        btnExcluir.onclick = () => {
-          posts.splice(posts.indexOf(filtered[index]), 1);
-          renderPosts();
-        };
-
-        li.appendChild(categoriaSpan);
-        li.appendChild(textoSpan);
-        li.appendChild(btnExcluir);
-
-        postsList.appendChild(li);
-      });
     }
 
-    // Ao enviar post
-    form.addEventListener('submit', e => {
-      e.preventDefault();
-      const texto = textarea.value.trim();
-      const categoria = categoriaSelect.value;
-      const subcategoria = subcategoriaSelect.value || '';
-
-      if (!texto || !categoria || (categoria === 'Melodias' && !subcategoria)) return;
-
-      posts.unshift({ texto, categoria, subcategoria });
-      renderPosts();
-
-      textarea.value = '';
-      categoriaSelect.selectedIndex = 0;
-      subcategoriaSelect.value = '';
-      subcategoriaSelect.style.display = 'none';
-      subcategoriaSelect.required = false;
-      textarea.focus();
-    });
-
-    // Função pra atualizar abas numeradas e filtro categoria
+    // Ativa categoria e atualiza visualizações
     function ativarCategoria(categoria) {
       filtroCategoriaAtual = categoria;
 
-      // Ativa ou desativa as abas melodias
+      // Atualiza active sidebar buttons
+      sidebarButtons.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.categoria === categoria);
+      });
+
+      // Mostra/oculta abas Melodias verticais
       if (categoria === 'Melodias') {
-        abasMelodias.style.display = 'flex';
+        abasMelodiasVertical.style.display = 'flex';
       } else {
-        abasMelodias.style.display = 'none';
+        abasMelodiasVertical.style.display = 'none';
       }
 
-      // Remove active dos botões da sidebar e seta no selecionado
-      sidebarButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.categoria === categoria));
-
-      // Se categoria não for melodias, renderiza direto
-      if (categoria !== 'Melodias') {
-        renderPosts();
-      } else {
-        ativarAbaMelodias(filtroAbaMelodias);
-      }
+      renderPosts();
     }
 
-    // Ativa aba numerada das melodias
+    // Ativa aba vertical das Melodias
     function ativarAbaMelodias(numero) {
       filtroAbaMelodias = numero;
 
-      abasButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.numero === numero));
-      renderPosts();
+      abasButtons.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.numero === numero);
+      });
+
+      // Só altera o texto da mensagem para mostrar qual aba está selecionada
+      melodiaMsg.innerHTML = `Posts da categoria Melodias estão desabilitados.<br />Você selecionou a Aba <strong>${numero}</strong>.<br />Use essa aba para seus estudos!`;
     }
 
     // Eventos sidebar
@@ -452,13 +440,35 @@
       btn.addEventListener('click', () => ativarCategoria(btn.dataset.categoria));
     });
 
-    // Eventos abas melodias
+    // Eventos abas Melodias vertical
     abasButtons.forEach(btn => {
       btn.addEventListener('click', () => ativarAbaMelodias(btn.dataset.numero));
     });
 
-    // Inicializa
+    // Ao postar, só permite se categoria não for Melodias (pois posts não aparecem lá)
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const texto = textarea.value.trim();
+      const categoria = categoriaSelect.value;
+
+      if (!texto || !categoria) return;
+
+      if(categoria === 'Melodias') {
+        alert('Posts na categoria Melodias não são permitidos no momento.');
+        return;
+      }
+
+      posts.unshift({ texto, categoria });
+      renderPosts();
+
+      textarea.value = '';
+      categoriaSelect.selectedIndex = 0;
+      textarea.focus();
+    });
+
+    // Inicializa com "Todos" ativo e aba 1 selecionada
     ativarCategoria('Todos');
+    ativarAbaMelodias('1');
   </script>
 </body>
 </html>
