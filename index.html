@@ -60,7 +60,7 @@
 
     /* Sidebar */
     aside.sidebar {
-      width: 220px;
+      width: 260px;
       background: #0d1b2a;
       border-radius: 10px;
       padding: 20px;
@@ -68,7 +68,7 @@
       flex-shrink: 0;
       display: flex;
       flex-direction: column;
-      gap: 15px;
+      gap: 20px;
       position: sticky;
       top: 100px;
       height: fit-content;
@@ -92,6 +92,7 @@
       cursor: pointer;
       transition: background 0.3s, color 0.3s;
       text-align: center;
+      user-select: none;
     }
     aside.sidebar button:hover,
     aside.sidebar button.active {
@@ -100,12 +101,12 @@
       border-color: #0088cc;
     }
 
-    /* Abas numeradas vertical para Melodias */
-    .abas-melodias-vertical {
-      margin-top: 20px;
-      display: flex;
+    /* Abas numeradas verticais para cada categoria */
+    .abas-vertical {
+      display: none;
       flex-direction: column;
       gap: 10px;
+      margin-top: 10px;
     }
     .aba-numero-vertical {
       background: transparent;
@@ -234,8 +235,8 @@
     #posts li button:hover {
       background: #aa0000;
     }
-    /* Mensagem de melodia desabilitada */
-    #melodia-msg {
+    /* Mensagem de categoria desabilitada */
+    #categoria-msg {
       font-style: italic;
       color: #888;
       padding: 20px;
@@ -267,7 +268,7 @@
         font-size: 1rem;
         padding: 8px 5px;
       }
-      .abas-melodias-vertical {
+      .abas-vertical {
         flex-direction: row;
         justify-content: center;
       }
@@ -292,16 +293,30 @@
       <h3>Categorias</h3>
       <button data-categoria="Todos" class="active">Todos</button>
       <button data-categoria="Melodias">Melodias</button>
-      <button data-categoria="Ideias">Ideias</button>
-      <button data-categoria="Composições">Composições</button>
+      <div id="abas-melodias-vertical" class="abas-vertical">
+        <button class="aba-numero-vertical active" data-numero="1" data-cat="Melodias">1</button>
+        <button class="aba-numero-vertical" data-numero="2" data-cat="Melodias">2</button>
+        <button class="aba-numero-vertical" data-numero="3" data-cat="Melodias">3</button>
+        <button class="aba-numero-vertical" data-numero="4" data-cat="Melodias">4</button>
+        <button class="aba-numero-vertical" data-numero="5" data-cat="Melodias">5</button>
+      </div>
 
-      <!-- Abas verticais para Melodias -->
-      <div id="abas-melodias-vertical" class="abas-melodias-vertical" style="display:none;">
-        <button class="aba-numero-vertical active" data-numero="1">1</button>
-        <button class="aba-numero-vertical" data-numero="2">2</button>
-        <button class="aba-numero-vertical" data-numero="3">3</button>
-        <button class="aba-numero-vertical" data-numero="4">4</button>
-        <button class="aba-numero-vertical" data-numero="5">5</button>
+      <button data-categoria="Ideias">Ideias</button>
+      <div id="abas-ideias-vertical" class="abas-vertical">
+        <button class="aba-numero-vertical active" data-numero="1" data-cat="Ideias">1</button>
+        <button class="aba-numero-vertical" data-numero="2" data-cat="Ideias">2</button>
+        <button class="aba-numero-vertical" data-numero="3" data-cat="Ideias">3</button>
+        <button class="aba-numero-vertical" data-numero="4" data-cat="Ideias">4</button>
+        <button class="aba-numero-vertical" data-numero="5" data-cat="Ideias">5</button>
+      </div>
+
+      <button data-categoria="Composições">Composições</button>
+      <div id="abas-composicoes-vertical" class="abas-vertical">
+        <button class="aba-numero-vertical active" data-numero="1" data-cat="Composições">1</button>
+        <button class="aba-numero-vertical" data-numero="2" data-cat="Composições">2</button>
+        <button class="aba-numero-vertical" data-numero="3" data-cat="Composições">3</button>
+        <button class="aba-numero-vertical" data-numero="4" data-cat="Composições">4</button>
+        <button class="aba-numero-vertical" data-numero="5" data-cat="Composições">5</button>
       </div>
     </aside>
 
@@ -315,9 +330,7 @@
           <textarea id="post-text" placeholder="Escreva seu post aqui..." required></textarea>
           <select id="categoria-select" required>
             <option value="" disabled selected>Escolha uma categoria</option>
-            <option value="Melodias">Melodias</option>
-            <option value="Ideias">Ideias</option>
-            <option value="Composições">Composições</option>
+            <option value="Todos">Todos</option>
           </select>
           <button type="submit" id="btn-postar" class="btn">Postar</button>
         </form>
@@ -326,9 +339,9 @@
           <!-- Posts aparecem aqui -->
         </ul>
 
-        <!-- Mensagem que aparece só na categoria Melodias -->
-        <div id="melodia-msg" style="display:none;">
-          Posts da categoria Melodias estão desabilitados.<br />
+        <!-- Mensagem que aparece nas categorias que não mostram posts -->
+        <div id="categoria-msg" style="display:none;">
+          Posts dessa categoria estão desabilitados.<br />
           Selecione uma aba à esquerda (1 a 5).
         </div>
       </section>
@@ -348,35 +361,49 @@
     const categoriaSelect = document.getElementById('categoria-select');
     const postsList = document.getElementById('posts');
     const sidebarButtons = document.querySelectorAll('aside.sidebar > button[data-categoria]');
-    const abasMelodiasVertical = document.getElementById('abas-melodias-vertical');
+    const abasMelodias = document.getElementById('abas-melodias-vertical');
+    const abasIdeias = document.getElementById('abas-ideias-vertical');
+    const abasComposicoes = document.getElementById('abas-composicoes-vertical');
     const abasButtons = document.querySelectorAll('.aba-numero-vertical');
-    const melodiaMsg = document.getElementById('melodia-msg');
+    const categoriaMsg = document.getElementById('categoria-msg');
 
     let posts = [];
     let filtroCategoriaAtual = 'Todos';
-    let filtroAbaMelodias = '1';
+    let filtroAbaAtual = {
+      Melodias: '1',
+      Ideias: '1',
+      'Composições': '1'
+    };
 
-    // Renderiza os posts conforme filtros (exceto Melodias)
+    function ocultarAbasTodas() {
+      abasMelodias.style.display = 'none';
+      abasIdeias.style.display = 'none';
+      abasComposicoes.style.display = 'none';
+    }
+
+    function mostrarAbas(categoria) {
+      ocultarAbasTodas();
+      if (categoria === 'Melodias') abasMelodias.style.display = 'flex';
+      else if (categoria === 'Ideias') abasIdeias.style.display = 'flex';
+      else if (categoria === 'Composições') abasComposicoes.style.display = 'flex';
+    }
+
+    // Renderiza os posts conforme filtros (apenas para "Todos")
     function renderPosts() {
       postsList.innerHTML = '';
 
-      if (filtroCategoriaAtual === 'Melodias') {
+      if (filtroCategoriaAtual === 'Melodias' || filtroCategoriaAtual === 'Ideias' || filtroCategoriaAtual === 'Composições') {
         // Esconde lista de posts e mostra mensagem
         postsList.style.display = 'none';
-        melodiaMsg.style.display = 'block';
+        categoriaMsg.style.display = 'block';
+        categoriaMsg.innerHTML = `Posts da categoria <strong>${filtroCategoriaAtual}</strong> estão desabilitados.<br />Você selecionou a Aba <strong>${filtroAbaAtual[filtroCategoriaAtual]}</strong>.<br />Use essa aba para seus estudos!`;
       } else {
         // Mostra posts e esconde mensagem
         postsList.style.display = 'block';
-        melodiaMsg.style.display = 'none';
+        categoriaMsg.style.display = 'none';
 
-        let filtered = [];
-        if (filtroCategoriaAtual === 'Todos') {
-          filtered = posts;
-        } else {
-          filtered = posts.filter(p => p.categoria === filtroCategoriaAtual);
-        }
-
-        filtered.forEach(({texto, categoria}, index) => {
+        // Aqui só posts da categoria 'Todos', pois só tem essa opção no select
+        posts.forEach(({texto, categoria}, index) => {
           const li = document.createElement('li');
 
           const categoriaSpan = document.createElement('span');
@@ -391,7 +418,7 @@
           btnExcluir.textContent = 'X';
           btnExcluir.title = 'Excluir post';
           btnExcluir.onclick = () => {
-            posts.splice(posts.indexOf(filtered[index]), 1);
+            posts.splice(index, 1);
             renderPosts();
           };
 
@@ -413,39 +440,49 @@
         btn.classList.toggle('active', btn.dataset.categoria === categoria);
       });
 
-      // Mostra/oculta abas Melodias verticais
-      if (categoria === 'Melodias') {
-        abasMelodiasVertical.style.display = 'flex';
+      // Mostrar abas só se for Melodias, Ideias ou Composições
+      if (categoria === 'Melodias' || categoria === 'Ideias' || categoria === 'Composições') {
+        mostrarAbas(categoria);
       } else {
-        abasMelodiasVertical.style.display = 'none';
+        ocultarAbasTodas();
       }
 
       renderPosts();
     }
 
-    // Ativa aba vertical das Melodias
-    function ativarAbaMelodias(numero) {
-      filtroAbaMelodias = numero;
+    // Ativa aba vertical para a categoria correspondente
+    function ativarAba(categoria, numero) {
+      filtroAbaAtual[categoria] = numero;
 
-      abasButtons.forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.numero === numero);
+      // Remove active de todas abas da categoria
+      document.querySelectorAll(`div#abas-${categoria.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')}-vertical .aba-numero-vertical`).forEach(btn => {
+        btn.classList.remove('active');
       });
 
-      // Só altera o texto da mensagem para mostrar qual aba está selecionada
-      melodiaMsg.innerHTML = `Posts da categoria Melodias estão desabilitados.<br />Você selecionou a Aba <strong>${numero}</strong>.<br />Use essa aba para seus estudos!`;
+      // Ativa a aba clicada
+      document.querySelector(`div#abas-${categoria.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')}-vertical button[data-numero="${numero}"]`).classList.add('active');
+
+      // Atualiza mensagem caso esteja na categoria ativa
+      if (filtroCategoriaAtual === categoria) {
+        categoriaMsg.innerHTML = `Posts da categoria <strong>${categoria}</strong> estão desabilitados.<br />Você selecionou a Aba <strong>${numero}</strong>.<br />Use essa aba para seus estudos!`;
+      }
     }
 
-    // Eventos sidebar
+    // Eventos sidebar categorias
     sidebarButtons.forEach(btn => {
       btn.addEventListener('click', () => ativarCategoria(btn.dataset.categoria));
     });
 
-    // Eventos abas Melodias vertical
+    // Eventos abas numeradas verticais
     abasButtons.forEach(btn => {
-      btn.addEventListener('click', () => ativarAbaMelodias(btn.dataset.numero));
+      btn.addEventListener('click', () => {
+        const cat = btn.dataset.cat;
+        const num = btn.dataset.numero;
+        ativarAba(cat, num);
+      });
     });
 
-    // Ao postar, só permite se categoria não for Melodias (pois posts não aparecem lá)
+    // Ao postar, só permite postar categoria "Todos"
     form.addEventListener('submit', e => {
       e.preventDefault();
       const texto = textarea.value.trim();
@@ -453,8 +490,8 @@
 
       if (!texto || !categoria) return;
 
-      if(categoria === 'Melodias') {
-        alert('Posts na categoria Melodias não são permitidos no momento.');
+      if(categoria !== 'Todos') {
+        alert('Posts só podem ser feitos na categoria "Todos".');
         return;
       }
 
@@ -466,9 +503,11 @@
       textarea.focus();
     });
 
-    // Inicializa com "Todos" ativo e aba 1 selecionada
+    // Inicializa
     ativarCategoria('Todos');
-    ativarAbaMelodias('1');
+    ativarAba('Melodias', '1');
+    ativarAba('Ideias', '1');
+    ativarAba('Composições', '1');
   </script>
 </body>
 </html>
